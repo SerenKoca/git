@@ -2,7 +2,7 @@
 session_start(); // Voeg dit toe aan het begin van de pagina
 
 function canLogin($username, $password){
-    if($username === 'seren@shop.com' && $password === "12345isnotsecure"){
+    if($username === 'seren@shop.com' && $password === "12345"){
         return true;
     }else{
         return false;
@@ -58,7 +58,7 @@ if(!empty($_POST)){
         <h1>Log in</h1>
       
         <?php if(isset($error)): ?>
-            <div class="alert">That password was incorrect. Please try again</div>
+            <div class="alert">Wachtwoord is fout!</div>
         <?php endif; ?>
       
         <div class="form form--login">
