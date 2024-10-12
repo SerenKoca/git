@@ -1,7 +1,17 @@
 <?php 
 
+    //PDO connection
+    $conn = new PDO('mysql:dbname=webshop;host=localhost', "root", "");
+
+    //select * from products and fetch as array
+    $statement = $conn->prepare('SELECT * FROM products');
+    $statement->execute();
+    $products = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+
     session_start(); //connectie maken met cookie code om sessie te lezen
-    if(isset($_SESSION['username'])){
+    if(isset($_SESSION['loggedin'])){
         //user is logged in 
         echo "Welcome ". $_SESSION['username'];
     }else{
@@ -19,5 +29,10 @@
 </head>
 <body>
     <h1>The private Dashboard</h1>
+    <?php foreach($products as $product): ?>
+    <article>
+        <h2><?php echo $product['title']; ?> : <?php echo $product['price']; ?></h2>
+    </article>
+    <?php endforeach; ?>
 </body>
 </html>
