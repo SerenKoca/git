@@ -13,7 +13,7 @@
     session_start(); //connectie maken met cookie code om sessie te lezen
     if(isset($_SESSION['loggedin'])){
         //user is logged in 
-        echo "Welcome ". $_SESSION['username'];
+        echo "Welcome ". $_SESSION['email'];
     }else{
         //user is not logged in
         header("Location: login.php");
@@ -32,6 +32,7 @@
     <?php foreach($products as $product): ?>
     <article>
         <h2><?php echo $product['title']; ?> : <?php echo $product['price']; ?></h2>
+        <a href="logout.php">Log out</a>
     </article>
     <?php endforeach; ?>
 </body>

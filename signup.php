@@ -1,47 +1,24 @@
-<?php 
-session_start(); // Voeg dit toe aan het begin van de pagina
 
-function canLogin($p_email, $p_password){
-	$conn = new PDO('mysql:dbname=webshop;host=localhost', "root", "");
-	$statement = $conn->prepare("select * from users where email = :email");
-	$statement->bindValue(':email', $p_email);
-	$statement->execute();
+<?php
+    if(!empty($_POST)){
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-	$user = $statement->fetch(PDO::FETCH_ASSOC);
-		
-	if($user){
-		$hash = $user['password'];
-		if(password_verify($p_password, $hash)){
-			return true;
-		}
+        $options = [
+            'cost' => 12,
+        ];
+        $hash = password_hash($password, PASSWORD_DEFAULT, $options);
 
-	}else{
-		//not found
-		return false;
-	}
-}
-
-	//Wanneer gaan we pas inloggen
-	if(!empty($_POST)){//als er niks in de url zit, mag je inloggen
-		$email = $_POST['email'];
-		$password = $_POST['password'];
-
-		if (canLogin($email, $password)){
-			//OK
+        $conn = new PDO('mysql:dbname=webshop;host=localhost', "root", "");
+        $statement = $conn->prepare('insert into users (email, password) values (:email, :password)');
+        $statement->bindValue(':email', $email);//safe tegen sql injectie
+        $statement->bindValue(':password', $hash);//safe tegen sql injectie
+        $statement->execute();
 	
-			session_start();//gaat een cookie zetten op de server met een moeilijke nummer
-			
-			$_SESSION["loggedin"] = true;
-			$_SESSION["email"] = $email;
-			header("Location: index.php");
-			
-		}else{
-			//niet OK
-			$error = true;
-		}
-	}
+    }
 
 ?>
+
 
 <html>
 <head>
@@ -61,8 +38,8 @@ function canLogin($p_email, $p_password){
       </div>
 
       <!-- Zorg dat je session_start() hebt aangeroepen voor deze code -->
-      <?php if(isset($_SESSION['email'])): ?>
-          <h3 class="user--name"><?php echo $_SESSION['email']; ?></h3>
+      <?php if(isset($_SESSION['username'])): ?>
+          <h3 class="user--name"><?php echo $_SESSION['username']; ?></h3>
           <a href="logout.php">Log out</a>
           <?php else: ?>
           <h3 class="user--name">Username here</h3>
@@ -73,13 +50,13 @@ function canLogin($p_email, $p_password){
 </header>
 
 <div id="app">
-    <form action="login.php" method="post">
-        <h1>Log in</h1>
+    <form action="" method="post">
+        <h1>sign Up</h1>
       
        
       
         <div class="form form--login">
-            <label for="email">Email</label>
+            <label for="email">Username</label>
             <input type="text" id="email" name="email">
         
             <label for="password">Password</label>
