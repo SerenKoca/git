@@ -1,22 +1,7 @@
 
 <?php
-    if(!empty($_POST)){
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
-        $options = [
-            'cost' => 12,
-        ];
-        $hash = password_hash($password, PASSWORD_DEFAULT, $options);
-
-        $conn = new PDO('mysql:dbname=webshop;host=localhost', "root", "");
-        $statement = $conn->prepare('insert into users (email, password) values (:email, :password)');
-        $statement->bindValue(':email', $email);//safe tegen sql injectie
-        $statement->bindValue(':password', $hash);//safe tegen sql injectie
-        $statement->execute();
-	
-    }
-
+include_once(__DIR__ . "/classes/Db.php");
+include_once(__DIR__ . "/classes/User.php");
 ?>
 
 
@@ -43,6 +28,7 @@
           <a href="logout.php">Log out</a>
           <?php else: ?>
           <h3 class="user--name">Username here</h3>
+          <a href="login.php">Log in</a>
       <?php endif; ?>
     </a>
     

@@ -66,6 +66,7 @@ function canLogin($p_email, $p_password){
           <a href="logout.php">Log out</a>
           <?php else: ?>
           <h3 class="user--name">Username here</h3>
+          <a href="signup.php">Sign Up</a>
       <?php endif; ?>
     </a>
     
