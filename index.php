@@ -1,5 +1,6 @@
 <?php 
-
+include_once(__DIR__ . "/classes/Db.php");
+include_once(__DIR__ . "/classes/Product.php");
     //PDO connection
     $conn = new PDO('mysql:dbname=webshop;host=localhost', "root", "");
 
@@ -18,6 +19,8 @@
         //user is not logged in
         header("Location: login.php");
     }
+
+    $products = Product::getAll();
 ?>
 
 <!DOCTYPE html>

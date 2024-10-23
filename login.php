@@ -1,46 +1,27 @@
-<?php 
+<?php
+include_once(__DIR__ . "/classes/Db.php");
+include_once(__DIR__ . "/classes/User.php");
 session_start(); // Voeg dit toe aan het begin van de pagina
 
-function canLogin($p_email, $p_password){
-	$conn = new PDO('mysql:dbname=webshop;host=localhost', "root", "");
-	$statement = $conn->prepare("select * from users where email = :email");
-	$statement->bindValue(':email', $p_email);
-	$statement->execute();
+if (!empty($_POST)) {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-	$user = $statement->fetch(PDO::FETCH_ASSOC);
-		
-	if($user){
-		$hash = $user['password'];
-		if(password_verify($p_password, $hash)){
-			return true;
-		}
-
-	}else{
-		//not found
-		return false;
-	}
-}
-
-	//Wanneer gaan we pas inloggen
-	if(!empty($_POST)){//als er niks in de url zit, mag je inloggen
-		$email = $_POST['email'];
-		$password = $_POST['password'];
-
-		if (canLogin($email, $password)){
-			//OK
-	
-			session_start();//gaat een cookie zetten op de server met een moeilijke nummer
-			
-			$_SESSION["loggedin"] = true;
-			$_SESSION["email"] = $email;
-			header("Location: index.php");
-			
-		}else{
-			//niet OK
-			$error = true;
-		}
-	}
-
+    $user = new User();
+    
+    try {
+        if ($user->canLogin($email, $password)) {
+            $_SESSION["loggedin"] = true;
+            $_SESSION["email"] = $email;
+            header("Location: index.php");
+            exit; // Beëindig het script na het sturen van een header
+        } else {
+            $error = true;
+        }
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
+  }
 ?>
 
 <html>

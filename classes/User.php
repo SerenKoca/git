@@ -1,6 +1,6 @@
 <?php
 
-include_once(__DIR__ . "/classes/Db.php");
+include_once(__DIR__ . "/Db.php");
 
 class User {
     private $email;
@@ -49,8 +49,10 @@ class User {
     /**
      * Save the user data into the database
      */
-    public function save() {
-        // Check if POST data contains both email and password
+    
+
+
+     public function save(){
         if (!empty($_POST['email']) && !empty($_POST['password'])) {
             $email = $_POST['email'];
             $password = $_POST['password'];
@@ -72,26 +74,27 @@ class User {
             // Throw exception if either email or password is missing
             throw new Exception("Email and password are required.");
         }
-    }
-}
-
-// Gebruik van de User-klasse in je script
-
-try {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Maak een nieuwe User aan
-        $user = new User();
-        $user->setEmail($_POST['email']);
-        $user->setPassword($_POST['password']);
         
-        // Sla de gebruiker op
-        if ($user->save()) {
-            echo "User successfully saved!";
-        }
     }
-} catch (Exception $e) {
-    // Toon foutmelding indien er een fout optreedt
-    echo "Error: " . $e->getMessage();
-}
 
+    public function canLogin($p_email, $p_password) {
+        try {
+            $conn = Db::getConnection();
+            $statement = $conn->prepare("SELECT * FROM users WHERE email = :email");
+            $statement->bindValue(':email', $p_email);
+            $statement->execute();
+            $user = $statement->fetch(PDO::FETCH_ASSOC);
+    
+            if ($user && password_verify($p_password, $user['password'])) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            throw new Exception('Database error: ' . $e->getMessage());
+        }
+    
+    }
+
+    }
 ?>

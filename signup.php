@@ -2,6 +2,21 @@
 <?php
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/User.php");
+
+if (!empty($_POST)) {
+  try {
+    $user = new User();
+    $user->setEmail($_POST['email']);
+    $user->setPassword($_POST['password']);
+
+    $user->save();
+    
+    
+  } catch (Exception $e) {
+    $error = $e->getMessage();
+  }
+}
+
 ?>
 
 
