@@ -37,7 +37,6 @@ $products = $selectedCategory ? Product::getByCategory($selectedCategory) : Prod
     </nav>
     
     <h1>Producten</h1>
-    
     <?php if (empty($products)): ?>
         <p>Geen producten gevonden in deze categorie.</p>
     <?php else: ?>

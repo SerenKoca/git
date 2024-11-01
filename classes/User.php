@@ -20,7 +20,7 @@ class User {
      */ 
     public function setEmail($email) {
         if (empty($email)) {
-            throw new Exception("Email cannot be empty");
+            $error1 = true;
         }
         $this->email = $email;
         return $this;
@@ -40,7 +40,7 @@ class User {
      */ 
     public function setPassword($password) {
         if (empty($password)) {
-            throw new Exception("Password cannot be empty");
+            $error1 = true;
         }
         $this->password = $password;
         return $this;
@@ -72,7 +72,7 @@ class User {
             return true;
         } else {
             // Throw exception if either email or password is missing
-            throw new Exception("Email and password are required.");
+            $error1 = true;
         }
         
     }
