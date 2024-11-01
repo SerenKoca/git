@@ -97,7 +97,7 @@ class User {
     }
 
     public function isAdmin() {
-        return $this->email === 'admin'; // Specifiek e-mailadres voor admin
+        return $this->email === 'admin'; // Vervang door het juiste admin e-mailadres
     }
 
     }

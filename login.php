@@ -1,14 +1,15 @@
 <?php
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/User.php");
-session_start(); // Voeg dit toe aan het begin van de pagina
+session_start(); // Start de sessie
 
 if (!empty($_POST)) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
     $user = new User();
-    
+    $user->setEmail($email); // Stel het e-mailadres in
+
     try {
         if ($user->canLogin($email, $password)) {
             $_SESSION["loggedin"] = true;
