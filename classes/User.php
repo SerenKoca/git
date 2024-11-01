@@ -97,11 +97,15 @@ class User {
     }
 
     public function isAdmin() {
-        return $this->email === 'admin'; // Vervang door het juiste admin e-mailadres
+        $conn = Db::getConnection();
+        $statement = $conn->prepare("SELECT is_admin FROM users WHERE email = :email");
+        $statement->bindValue(':email', $this->email);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return isset($result['is_admin']) && $result['is_admin'] == 1;
     }
 
-    }
-
-    
+}
 
 ?>

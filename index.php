@@ -14,7 +14,7 @@ include_once(__DIR__ . "/classes/Product.php");
     session_start(); //connectie maken met cookie code om sessie te lezen
     if(isset($_SESSION['loggedin'])){
         //user is logged in 
-        echo "Welcome ". $_SESSION['email'];
+        
     }else{
         //user is not logged in
         header("Location: login.php");
@@ -28,15 +28,15 @@ include_once(__DIR__ . "/classes/Product.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Homepage</title>
+    <link rel="stylesheet" href="webshop.css">
+    <?php include_once("nav.php"); ?>   
 </head>
 <body>
     <h1>The private Dashboard</h1>
-    <?php foreach($products as $product): ?>
-    <article>
-        <h2><?php echo $product['title']; ?> : <?php echo $product['price']; ?></h2>
-        <a href="logout.php">Log out</a>
-    </article>
-    <?php endforeach; ?>
+
+    <footer>
+        <?php include_once("footer.php"); ?> 
+    </footer>
 </body>
 </html>

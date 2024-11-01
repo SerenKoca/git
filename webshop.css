@@ -129,3 +129,17 @@ h1{
   .hidden{
     display: none;
   }
+
+  .category-nav {
+    background-color: #ebca7f;
+    padding: 0.6em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 6em;
+}
+
+.category-nav a {
+    margin: 0 1em;
+    text-decoration: none;
+}
