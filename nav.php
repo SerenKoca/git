@@ -1,19 +1,23 @@
-<link rel="stylesheet" href="webshop.css">
-<link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
-
 <header>
-        <nav class="nav">
-            <div>
+    <nav class="nav">
+        <div>
             <a href="index.php">Home</a> |
             <a href="products.php">Producten</a> 
-            
-            </div>
-    
-            <div class="nav_username">
-            
-            <a href="#" class= "user_nav"><?php echo "Username: ".$_SESSION['email']; ?></a> |
-            <a href="logout.php">Log Out</a> 
-            </div>
+        </div>
+        
+        <!-- Search bar in the middle -->
+        <div class="nav_search">
+            <form method="GET" action="products.php">
+                <input type="text" name="search" placeholder="Search products..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+            </form>
+        </div>
 
-        </nav>
+        <div class="nav_username">
+            <a href="#" class="user_nav"><?php echo "Username: " . $_SESSION['email']; ?></a> |
+            <a href="logout.php">Log Out</a>
+        </div>
+    </nav>
 </header>
+
+
+

@@ -78,6 +78,15 @@ h1{
   color: #fff;
 }
 
+.nav_search input[type="text"] {
+  width: 100%;
+  max-width: 400px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
 /*-------product.css-------*/
 
 
@@ -125,14 +134,90 @@ h1{
 
 .category-nav {
   background-color: #ebca7f;
-  padding: 0.6em;
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 6em;
+  margin-bottom: 2em;
+  margin-left: 1em;
+  margin-right: 1em;
+  padding: 1em;
+  border-radius: 30px;
 }
 
 .category-nav a {
   margin: 0 1em;
   text-decoration: none;
+  color: black;
+  transition: color 0.3s ease, font-size 0.3s ease; /* Smooth transition for color and size */
+}
+
+.category-nav a:hover {
+  color: white;
+  font-size: 1.4em;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: left;
+  padding: 20px;
+}
+
+/* Product Card Styling */
+.product-grid article {
+  background-color: #ffffff;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 250px; /* Fixed width for each card */
+  transition: transform 0.3s, box-shadow 0.3s;
+  
+}
+
+.product-grid article:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Product Image Styling */
+.product-grid article img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+/* Product Title */
+.product-grid article h2 {
+  font-size: 1.2em;
+  color: #333;
+  margin: 10px 0;
+}
+
+.product-grid article h2 a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.product-grid article h2 a:hover {
+  color: #0056b3;
+}
+
+/* Product Price and Category */
+.product-grid article p {
+  font-size: 0.9em;
+  color: #555;
+  margin: 5px 0;
+}
+
+.product-grid a {
+  text-decoration: none !important;
+}
+
+.no_products {
+  text-align: center;
+  font-size: 1.5em;
 }

@@ -95,5 +95,71 @@ class Product {
         return $statement->fetchAll();
     }
 
+
+    public static function searchByName($searchTerm) {
+        $searchTerm = "%" . $searchTerm . "%"; // Wildcard for LIKE operator
+        
+        // SQL query to search products by title
+        $query = "SELECT * FROM products WHERE title LIKE :searchTerm";
+        $stmt = Db::getConnection()->prepare($query);
+        $stmt->bindParam(":searchTerm", $searchTerm, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        // Return the result as an associative array
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function deleteById($id) {
+        $query = "DELETE FROM products WHERE id = :id";
+        $stmt = Db::getConnection()->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute(); // Executes the delete query
+    }
+
+    public static function update($id, $title, $category, $price, $image) {
+        // Verbind met de database
+        $db = Db::getConnection();
+
+        // De update query
+        $query = "UPDATE products SET title = :title, categorie = :category, price = :price, image = :image WHERE id = :id";
+        $stmt = $db->prepare($query);
+
+        // Bind de parameters
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':category', $category);
+        $stmt->bindParam(':price', $price);
+        $stmt->bindParam(':image', $image);
+
+        // Voer de query uit
+        $stmt->execute();
+    }
+
+    public static function getById($id) {
+        // Verbind met de database
+        $db = Db::getConnection();
+
+        // De query om een product op te halen op basis van de ID
+        $query = "SELECT * FROM products WHERE id = :id LIMIT 1";
+        $stmt = $db->prepare($query);
+
+        // Bind de parameter
+        $stmt->bindParam(':id', $id);
+
+        // Voer de query uit
+        $stmt->execute();
+
+        // Haal het product op als een associatief array
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Als het product bestaat, retourneer het
+        if ($product) {
+            return $product;
+        }
+
+        // Als het product niet bestaat, retourneer null
+        return null;
+    }
+
 }
 ?>

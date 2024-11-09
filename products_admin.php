@@ -2,11 +2,9 @@
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");
 
-session_start(); // Start de sessie
-
-// Controleer of de gebruiker is ingelogd
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header("Location: login.php");
+session_start();
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+    header("Location: index.php");
     exit;
 }
 
@@ -29,6 +27,12 @@ if ($searchTerm) {
     }
 }
 
+if (isset($_POST['delete_product_id'])) {
+    $productIdToDelete = $_POST['delete_product_id'];
+    Product::deleteById($productIdToDelete);
+    header("Location: products_admin.php"); // Redirect after deletion
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -68,6 +72,19 @@ if ($searchTerm) {
                         <?php endif; ?>
                         <h2>€<?php echo number_format($product['price'], 2); ?></h2>
                     </a>
+                    <form action="products_admin.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                        <input type="hidden" name="delete_product_id" value="<?php echo $product['id']; ?>">
+                        <button type="submit" class="delete-btn">
+                            <i class="fa-solid fa-trash-can"></i> Verwijder
+                        </button>
+                    </form>
+                            <br>
+                    <form action="product_edit.php" method="GET">
+                        <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
+                        <button type="submit" class="edit-btn">
+                            <i class="fa-solid fa-pen"></i> Wijzig
+                        </button>
+                    </form>
                 </article>
             <?php endforeach; ?>
         </div>

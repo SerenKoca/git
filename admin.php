@@ -4,9 +4,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_
     header("Location: index.php");
     exit;
 }
-
-// Admin pagina content
-echo "<h1>Welcome to the Admin Panel</h1>";
 ?>
 
 <!DOCTYPE html>
@@ -21,14 +18,17 @@ echo "<h1>Welcome to the Admin Panel</h1>";
 
     <header>
         <nav class="nav">
+            <div>
             <a href="admin.php">Admin Panel</a> |
             <a href="addProduct.php">Product toevoegen</a> |
+            <a href="products_admin.php">Producten</a>
+            </div>
             <a href="logout.php">Log Out</a>
         </nav>
     </header>
 
     <div class="container">
-        <h1>Add New Product</h1>
+        <h1>Admin panel</h1>
     </div>
 </body>
 </html>
