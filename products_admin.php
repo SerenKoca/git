@@ -43,16 +43,26 @@ if (isset($_POST['delete_product_id'])) {
     <title>Producten</title>
     <link rel="stylesheet" href="webshop.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <?php include_once("nav.php"); ?>   
+    <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css"> 
 </head>
 <body>
+<header>
+        <nav class="nav">
+            <div>
+            <a href="admin.php">Admin Panel</a> |
+            <a href="addProduct.php">Product toevoegen</a> |
+            <a href="products_admin.php">Producten</a>
+            </div>
+            <a href="logout.php">Log Out</a>
+        </nav>
+    </header>
     <!-- Categorie navigatie -->
     <nav class="category-nav">
-        <a href="products.php">Alle Categorieën</a>
-        <a href="products.php?category=hond" <?php echo $selectedCategory == 'hond' ? 'class="active"' : ''; ?>><i class="fas fa-dog"></i> Hond</a>
-        <a href="products.php?category=kat" <?php echo $selectedCategory == 'kat' ? 'class="active"' : ''; ?>><i class="fa-solid fa-cat"></i> Kat</a>
-        <a href="products.php?category=knaagdier" <?php echo $selectedCategory == 'knaagdier' ? 'class="active"' : ''; ?>><i class="fa-solid fa-otter"></i> Knaagdier</a>
-        <a href="products.php?category=vogel" <?php echo $selectedCategory == 'vogel' ? 'class="active"' : ''; ?>><i class="fa-solid fa-crow"></i> Vogel</a>
+        <a href="products_admin.php">Alle Categorieën</a>
+        <a href="products_admin.php?category=hond" <?php echo $selectedCategory == 'hond' ? 'class="active"' : ''; ?>><i class="fas fa-dog"></i> Hond</a>
+        <a href="products_admin.php?category=kat" <?php echo $selectedCategory == 'kat' ? 'class="active"' : ''; ?>><i class="fa-solid fa-cat"></i> Kat</a>
+        <a href="products_admin.php?category=knaagdier" <?php echo $selectedCategory == 'knaagdier' ? 'class="active"' : ''; ?>><i class="fa-solid fa-otter"></i> Knaagdier</a>
+        <a href="products_admin.php?category=vogel" <?php echo $selectedCategory == 'vogel' ? 'class="active"' : ''; ?>><i class="fa-solid fa-crow"></i> Vogel</a>
     </nav>
 
     <h1>Producten</h1>
@@ -62,7 +72,7 @@ if (isset($_POST['delete_product_id'])) {
         <div class="product-grid">
             <?php foreach ($products as $product): ?>
                 <article>
-                    <a href="product_detail.php?id=<?php echo htmlspecialchars($product['id']); ?>">
+                    <a href="product_detail_admin.php?id=<?php echo htmlspecialchars($product['id']); ?>">
                         <h2><?php echo htmlspecialchars($product['title']); ?></h2>
                         <p>Categorie: <?php echo htmlspecialchars($product['categorie']); ?></p>
                         <?php if (!empty($product['image'])): ?>

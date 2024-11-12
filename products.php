@@ -2,7 +2,7 @@
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");
 
-session_start(); // Start de sessie
+session_start();
 
 // Controleer of de gebruiker is ingelogd
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
@@ -10,18 +10,18 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
-// Haal de geselecteerde categorie op (indien aanwezig)
+// Haal de geselecteerde categorie op
 $selectedCategory = isset($_GET['category']) ? $_GET['category'] : null;
 
-// Haal de zoekterm op (indien aanwezig)
+// Haal de zoekterm op
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : null;
 
-// Haal de producten op (filter op categorie en zoekopdracht indien aanwezig)
+// Haal de producten op (filter categorie en zoekopdracht)
 if ($searchTerm) {
     // Zoek op naam
     $products = Product::searchByName($searchTerm);
 } else {
-    // Haal producten op op basis van de geselecteerde categorie, of alle producten als er geen categorie is
+    // categorie
     if ($selectedCategory) {
         $products = Product::getByCategory($selectedCategory);
     } else {
@@ -39,6 +39,7 @@ if ($searchTerm) {
     <title>Producten</title>
     <link rel="stylesheet" href="webshop.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
     <?php include_once("nav.php"); ?>   
 </head>
 <body>
@@ -53,7 +54,7 @@ if ($searchTerm) {
 
     <h1>Producten</h1>
     <?php if (empty($products)): ?>
-        <p class="no_products">Geen producten gevonden voor "<?php echo htmlspecialchars($searchTerm); ?>" in deze categorie. <i class="fa-solid fa-face-frown"></i></p>
+        <p class="no_products">Geen producten gevonden in deze categorie. <i class="fa-solid fa-face-frown"></i></p>
     <?php else: ?>
         <div class="product-grid">
             <?php foreach ($products as $product): ?>

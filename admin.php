@@ -11,24 +11,47 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product</title>
+    <title>Admin Panel</title>
     <link rel="stylesheet" href="webshop.css">
+    <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
 </head>
 <body>
-
-    <header>
+    
+<header>
         <nav class="nav">
             <div>
-            <a href="admin.php">Admin Panel</a> |
-            <a href="addProduct.php">Product toevoegen</a> |
-            <a href="products_admin.php">Producten</a>
+                <a href="admin.php">Admin Panel</a> |
+                <a href="addProduct.php">Add Product</a> |
+                <a href="products_admin.php">Products</a>
             </div>
-            <a href="logout.php">Log Out</a>
+            <a href="logout.php" class="logout">Log Out</a>
         </nav>
     </header>
 
-    <div class="container">
-        <h1>Admin panel</h1>
+    <div class="admin-container">
+        <h1>Welcome to the Admin Panel</h1>
+        <p class="intro-text">Here are the actions you can take:</p>
+
+        <div class="admin-options">
+            <div class="admin-option">
+                <a href="addProduct.php" class="admin-link">
+                    <div class="link-content">
+                        <h2>Add a New Product</h2>
+                        <p>Click here to add a new product to the shop.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="admin-option">
+                <a href="products_admin.php" class="admin-link">
+                    <div class="link-content">
+                        <h2>View All Products</h2>
+                        <p>Manage and edit existing products.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
+
 </body>
 </html>

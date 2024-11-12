@@ -2,7 +2,7 @@
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/User.php");
 
-$error1 = ""; // Variable to store error messages
+$error1 = "";
 
 if (!empty($_POST)) {
     try {
@@ -14,7 +14,7 @@ if (!empty($_POST)) {
             $error1 = "Er is een fout opgetreden bij het opslaan van de gebruiker.";
         }
     } catch (Exception $e) {
-        $error1 = $e->getMessage(); // Display specific error message
+        $error1 = $e->getMessage();
     }
 }
 ?>

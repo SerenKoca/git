@@ -1,3 +1,8 @@
+<head>
+    <link rel="stylesheet" href="webshop.css">
+    <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
+</head>
+
 <header>
     <nav class="nav">
         <div>
@@ -14,6 +19,7 @@
 
         <div class="nav_username">
             <a href="#" class="user_nav"><?php echo "Username: " . $_SESSION['email']; ?></a> |
+            <a href="change_password.php">Change Password</a> |
             <a href="logout.php">Log Out</a>
         </div>
     </nav>

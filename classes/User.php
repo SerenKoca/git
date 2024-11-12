@@ -82,5 +82,38 @@ class User {
 
         return isset($result['is_admin']) && $result['is_admin'] == 1;
     }
+
+    public function changePassword($currentPassword, $newPassword) {
+        // Stap 1: Verifieer dat de gebruiker het juiste huidige wachtwoord invoert
+        $conn = Db::getConnection();
+        $statement = $conn->prepare("SELECT password FROM users WHERE email = :email");
+        $statement->bindValue(':email', $this->email);
+        $statement->execute();
+        $user = $statement->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$user || !password_verify($currentPassword, $user['password'])) {
+            throw new Exception("Huidige wachtwoord is onjuist.");
+        }
+    
+        // Stap 2: Valideer het nieuwe wachtwoord (bijv. minimaal 8 tekens, bevat een cijfer en een speciaal teken)
+        if (strlen($newPassword) < 8 || !preg_match('/[0-9]/', $newPassword) || !preg_match('/[\W]/', $newPassword)) {
+            throw new Exception("Het nieuwe wachtwoord moet minimaal 8 tekens lang zijn en moet een cijfer en een speciaal teken bevatten.");
+        }
+    
+        // Stap 3: Versleutel het nieuwe wachtwoord
+        $options = ['cost' => 12];
+        $newHash = password_hash($newPassword, PASSWORD_DEFAULT, $options);
+    
+        // Stap 4: Update het wachtwoord in de database
+        $statement = $conn->prepare("UPDATE users SET password = :password WHERE email = :email");
+        $statement->bindValue(':password', $newHash);
+        $statement->bindValue(':email', $this->email);
+    
+        if ($statement->execute()) {
+            return "Wachtwoord succesvol bijgewerkt.";
+        } else {
+            throw new Exception("Er is een fout opgetreden bij het bijwerken van het wachtwoord.");
+        }
+    }
 }
 ?>

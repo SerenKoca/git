@@ -16,7 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $product = new Product();
         $product->setTitle($_POST['title']);
         $product->setPrice($_POST['price']);
-        $product->setCategory($_POST['category']); // Zorg ervoor dat je ook de categorie instelt
+        $product->setCategory($_POST['category']);
+        $product->setDescription($_POST['description']);
 
         // Afbeelding uploaden
         $product->uploadImage($_FILES['image']);
@@ -40,21 +41,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
     <link rel="stylesheet" href="webshop.css">
+    <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
 </head>
 <body>
 
     <header>
-    <nav class="nav">
+        <nav class="nav">
             <div>
-            <a href="admin.php">Admin Panel</a> |
-            <a href="addProduct.php">Product toevoegen</a> |
-            <a href="products_admin.php">Producten</a>
+                <a href="admin.php">Admin Panel</a> |
+                <a href="addProduct.php">Add Product</a> |
+                <a href="products_admin.php">Products</a>
             </div>
-            <a href="logout.php">Log Out</a>
+            <a href="logout.php" class="logout">Log Out</a>
         </nav>
     </header>
 
-    <div class="container">
+    <div class="container add-product-page">
         <h1>Add New Product</h1>
 
         <?php if ($error): ?>
@@ -85,6 +87,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option value="knaagdier">Knaagdier</option>
                     <option value="vogel">Vogel</option>
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
             </div>
 
             <div class="form-group">

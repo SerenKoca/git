@@ -29,8 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category = $_POST['category'];
     $price = $_POST['price'];
     $image = $_POST['image']; // Optionally, handle image upload
+    $description = $_POST['description']; // Haal de beschrijving op
 
-    Product::update($productId, $title, $category, $price, $image);
+    Product::update($productId, $title, $category, $price, $image, $description);
 
     header("Location: products_admin.php"); // Redirect to products list after update
     exit;
@@ -45,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Product Edit</title>
     <link rel="stylesheet" href="webshop.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
 </head>
 <body>
     <h1>Wijzig Product</h1>
@@ -61,6 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="image">Afbeelding URL:</label>
         <input type="text" name="image" id="image" value="<?php echo htmlspecialchars($product['image']); ?>">
+
+        <label for="description">Beschrijving:</label>
+        <textarea name="description" id="description" required><?php echo htmlspecialchars($product['description']); ?></textarea>
 
         <button type="submit">Wijzig Product</button>
     </form>

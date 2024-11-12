@@ -58,7 +58,7 @@ if (isset($_GET['id'])) {
                 <p><?php echo htmlspecialchars($product['description'] ?? "Geen beschrijving beschikbaar."); ?></p>
             </div>
 
-            <a href="products.php" class="back-button">Terug naar producten</a>
+            <a href="products_admin.php" class="back-button">Terug naar producten</a>
         </div>
     </div>
 
