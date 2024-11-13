@@ -1,16 +1,28 @@
 <?php
+
+// Zorg ervoor dat de juiste paden worden gebruikt voor je includes
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/User.php");
+include_once(__DIR__ . "/classes/Customer.php");
+
+use Web\XD\Customer;
 
 $error1 = "";
 
 if (!empty($_POST)) {
     try {
-        $user = new User();
-        $user->setEmail($_POST['email']);
-        $user->setPassword($_POST['password']);
+        // Maak een nieuw Customer object aan
+        $customer = new Customer();
+        $customer->setEmail($_POST['email']);
+        $customer->setPassword($_POST['password']);
 
-        if (!$user->save()) {
+        // Probeer de klant op te slaan
+        if ($customer->save()) {
+            echo "Account succesvol aangemaakt!";
+            // Eventueel redirect naar loginpagina:
+            // header("Location: login.php");
+            // exit;
+        } else {
             $error1 = "Er is een fout opgetreden bij het opslaan van de gebruiker.";
         }
     } catch (Exception $e) {
@@ -44,7 +56,7 @@ if (!empty($_POST)) {
                 <?php endif; ?>
             </div>
 
-            <input type="submit" value="Sign In" class="btn">
+            <input type="submit" value="Sign Up" class="btn">
 
             <div><p>Al een Account? <a href="login.php">Login</a></p></div>
         </form>

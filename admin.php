@@ -1,5 +1,7 @@
 <?php
+use Web\XD\User;
 session_start();
+
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     header("Location: index.php");
     exit;

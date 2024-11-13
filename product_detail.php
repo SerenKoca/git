@@ -1,4 +1,7 @@
 <?php 
+
+use Web\XD\Product;
+use Web\XD\Db; 
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");
 session_start();

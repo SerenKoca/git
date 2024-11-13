@@ -1,4 +1,8 @@
 <?php
+
+namespace Web\XD;
+use Web\XD\Db;
+
 include_once(__DIR__ . "/Db.php");
 
 class Product {
@@ -87,12 +91,11 @@ class Product {
 
     // Methode om alle producten op te halen
     public static function getAll() {
-        $conn = Db::getConnection();
-        $statement = $conn->prepare("SELECT * FROM products");
+        $conn = Db::getConnection(); // Zorg ervoor dat je Db::getConnection() gebruikt
+        $statement = $conn->prepare("SELECT * FROM products LIMIT 10");
         $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $statement->fetchAll(\PDO::FETCH_ASSOC); // Voeg de backslash toe voor de ingebouwde PDO
     }
-
     // Methode om producten op te halen op basis van categorie
     public static function getByCategory($category) {
         $conn = Db::getConnection();
@@ -116,7 +119,7 @@ class Product {
     public static function deleteById($id) {
         $query = "DELETE FROM products WHERE id = :id";
         $stmt = Db::getConnection()->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT); // Voeg de backslash toe voor de ingebouwde PDO
         return $stmt->execute();
     }
 
@@ -139,11 +142,12 @@ class Product {
         $conn = Db::getConnection();
         $query = "SELECT * FROM products WHERE id = :id";
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT); // Voeg de backslash toe voor de ingebouwde PDO
         $stmt->execute();
         
         // Haal productdetails op, retourneer null als er geen product gevonden wordt
-        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+        $product = $stmt->fetch(\PDO::FETCH_ASSOC); // Voeg de backslash toe voor de ingebouwde PDO
         return $product ? $product : null;
     }
+
 }
