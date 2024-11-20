@@ -20,14 +20,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_
 <body>
     
 <header>
-        <nav class="nav">
-            <div>
-                <a href="admin.php">Admin Panel</a> |
-                <a href="addProduct.php">Add Product</a> |
-                <a href="products_admin.php">Products</a>
-            </div>
-            <a href="logout.php" class="logout">Log Out</a>
-        </nav>
+<?php include_once("nav_admin.php"); ?>
     </header>
 
     <div class="admin-container">

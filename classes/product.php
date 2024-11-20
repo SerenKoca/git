@@ -1,16 +1,16 @@
 <?php
 
 namespace Web\XD;
-use Web\XD\Db;
 
-include_once(__DIR__ . "/Db.php");
+use Web\XD\Db;
+use Exception;
 
 class Product {
     private $title;
     private $price;
-    private $category;
+    private $categoryId;
     private $image;
-    private $description; // Nieuwe eigenschap voor beschrijving
+    private $description;
 
     // Setter voor titel
     public function setTitle($title) {
@@ -30,13 +30,13 @@ class Product {
         return $this;
     }
 
-    // Setter voor categorie
-    public function setCategory($category) {
-        $validCategories = ['hond', 'kat', 'knaagdier', 'vogel'];
-        if (!in_array($category, $validCategories)) {
-            throw new Exception("Invalid category");
+    // Setter voor categorie (verwacht ID)
+    public function setCategoryId($categoryId) {
+        if (!is_numeric($categoryId) || $categoryId <= 0) {
+            throw new Exception("Invalid category ID");
         }
-        $this->category = $category;
+        $this->categoryId = $categoryId;
+        return $this;
     }
 
     // Setter voor beschrijving
@@ -51,17 +51,21 @@ class Product {
     // Setter voor afbeelding
     public function setImage($image) {
         $this->image = $image;
+        return $this;
     }
 
     // Methode om product toe te voegen aan de database
     public function addProduct() {
         $conn = Db::getConnection();
-        $statement = $conn->prepare("INSERT INTO products (title, price, categorie, image, description) VALUES (:title, :price, :categorie, :image, :description)");
+        $statement = $conn->prepare("
+            INSERT INTO products (title, price, category_id, image, description) 
+            VALUES (:title, :price, :category_id, :image, :description)
+        ");
         $statement->bindValue(':title', $this->title);
         $statement->bindValue(':price', $this->price);
-        $statement->bindValue(':categorie', $this->category);
+        $statement->bindValue(':category_id', $this->categoryId);
         $statement->bindValue(':image', $this->image);
-        $statement->bindValue(':description', $this->description); // Bind de beschrijving aan de query
+        $statement->bindValue(':description', $this->description);
         return $statement->execute();
     }
 
@@ -71,13 +75,16 @@ class Product {
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
+
         if ($file['error'] === UPLOAD_ERR_OK) {
             $uploadFile = $uploadDir . basename($file['name']);
             $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
             $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+
             if (!in_array($imageFileType, $allowedTypes)) {
                 throw new Exception("Only JPG, JPEG, PNG & GIF files are allowed.");
             }
+
             if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
                 $this->setImage($uploadFile);
                 return true;
@@ -91,63 +98,105 @@ class Product {
 
     // Methode om alle producten op te halen
     public static function getAll() {
-        $conn = Db::getConnection(); // Zorg ervoor dat je Db::getConnection() gebruikt
-        $statement = $conn->prepare("SELECT * FROM products LIMIT 10");
-        $statement->execute();
-        return $statement->fetchAll(\PDO::FETCH_ASSOC); // Voeg de backslash toe voor de ingebouwde PDO
-    }
-    // Methode om producten op te halen op basis van categorie
-    public static function getByCategory($category) {
         $conn = Db::getConnection();
-        $statement = $conn->prepare("SELECT * FROM products WHERE categorie = :categorie");
-        $statement->bindValue(':categorie', $category);
+        $statement = $conn->prepare("
+            SELECT products.*, categories.name AS category_name 
+            FROM products 
+            LEFT JOIN categories ON products.category_id = categories.id
+        ");
         $statement->execute();
-        return $statement->fetchAll();
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    // Methode om producten te zoeken op naam
-    public static function searchByName($searchTerm) {
-        $searchTerm = "%" . $searchTerm . "%";
-        $query = "SELECT * FROM products WHERE title LIKE :searchTerm OR description LIKE :searchTerm";
-        $stmt = Db::getConnection()->prepare($query);
-        $stmt->bindParam(":searchTerm", $searchTerm, PDO::PARAM_STR);
+    // Methode om alle categorieën op te halen
+    public static function getCategories() {
+        $conn = Db::getConnection();
+        $stmt = $conn->prepare("SELECT * FROM categories ORDER BY name ASC");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // Methode om producten op te halen op basis van categorie-ID
+    public static function getByCategory($categoryName) {
+        $conn = Db::getConnection();
+        
+        // First, get the category ID based on the category name
+        $stmt = $conn->prepare("SELECT id FROM categories WHERE name = :category_name LIMIT 1");
+        $stmt->bindValue(':category_name', $categoryName, \PDO::PARAM_STR);
+        $stmt->execute();
+        $category = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if ($category) {
+            $categoryId = $category['id'];
+            
+            // Now, fetch the products by category ID
+            $statement = $conn->prepare("
+                SELECT products.*, categories.name AS category_name 
+                FROM products 
+                LEFT JOIN categories ON products.category_id = categories.id 
+                WHERE category_id = :category_id
+            ");
+            $statement->bindValue(':category_id', $categoryId, \PDO::PARAM_INT);
+            $statement->execute();
+            return $statement->fetchAll(\PDO::FETCH_ASSOC);
+        } else {
+            return []; // If no category found, return empty
+        }
+    }
+
+    // Methode om producten te zoeken op titel of beschrijving
+    public static function searchByName($searchTerm) {
+        $conn = Db::getConnection();
+        $searchTerm = "%" . $searchTerm . "%";
+        $statement = $conn->prepare("
+            SELECT products.*, categories.name AS category_name 
+            FROM products 
+            LEFT JOIN categories ON products.category_id = categories.id 
+            WHERE title LIKE :searchTerm OR description LIKE :searchTerm
+        ");
+        $statement->bindValue(":searchTerm", $searchTerm, \PDO::PARAM_STR);
+        $statement->execute();
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     // Methode om een product te verwijderen op basis van ID
     public static function deleteById($id) {
-        $query = "DELETE FROM products WHERE id = :id";
-        $stmt = Db::getConnection()->prepare($query);
-        $stmt->bindParam(':id', $id, \PDO::PARAM_INT); // Voeg de backslash toe voor de ingebouwde PDO
-        return $stmt->execute();
+        $conn = Db::getConnection();
+        $statement = $conn->prepare("DELETE FROM products WHERE id = :id");
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+        return $statement->execute();
     }
 
     // Methode om een product bij te werken
-    public static function update($id, $title, $category, $price, $image, $description) {
-        $db = Db::getConnection();
-        $query = "UPDATE products SET title = :title, categorie = :category, price = :price, image = :image, description = :description WHERE id = :id";
-        $stmt = $db->prepare($query);
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':category', $category);
-        $stmt->bindParam(':price', $price);
-        $stmt->bindParam(':image', $image);
-        $stmt->bindParam(':description', $description);
-        return $stmt->execute(); // Voer de statement uit
+    public static function update($id, $title, $categoryId, $price, $image, $description) {
+        $conn = Db::getConnection();
+        $statement = $conn->prepare("
+            UPDATE products 
+            SET title = :title, category_id = :category_id, price = :price, image = :image, description = :description 
+            WHERE id = :id
+        ");
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+        $statement->bindValue(':title', $title);
+        $statement->bindValue(':category_id', $categoryId, \PDO::PARAM_INT);
+        $statement->bindValue(':price', $price);
+        $statement->bindValue(':image', $image);
+        $statement->bindValue(':description', $description);
+        return $statement->execute();
     }
 
     // Methode om een product op te halen op basis van ID
     public static function getById($id) {
         $conn = Db::getConnection();
-        $query = "SELECT * FROM products WHERE id = :id";
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':id', $id, \PDO::PARAM_INT); // Voeg de backslash toe voor de ingebouwde PDO
-        $stmt->execute();
-        
-        // Haal productdetails op, retourneer null als er geen product gevonden wordt
-        $product = $stmt->fetch(\PDO::FETCH_ASSOC); // Voeg de backslash toe voor de ingebouwde PDO
-        return $product ? $product : null;
+        $statement = $conn->prepare("
+            SELECT products.*, categories.name AS category_name 
+            FROM products 
+            LEFT JOIN categories ON products.category_id = categories.id 
+            WHERE products.id = :id
+        ");
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        return $statement->fetch(\PDO::FETCH_ASSOC);
     }
 
+    
 }

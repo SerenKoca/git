@@ -1,5 +1,4 @@
 <?php 
-
 use Web\XD\Product;
 use Web\XD\Db;
 include_once(__DIR__ . "/classes/Db.php");
@@ -24,7 +23,7 @@ if ($searchTerm) {
     // Zoek op naam
     $products = Product::searchByName($searchTerm);
 } else {
-    // categorie
+    // Categorie filter
     if ($selectedCategory) {
         $products = Product::getByCategory($selectedCategory);
     } else {
@@ -32,6 +31,8 @@ if ($searchTerm) {
     }
 }
 
+// Haal categorieën op voor navigatie
+$categories = Product::getCategories();
 ?>
 
 <!DOCTYPE html>
@@ -43,16 +44,21 @@ if ($searchTerm) {
     <link rel="stylesheet" href="webshop.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
-    <?php include_once("nav.php"); ?>   
 </head>
 <body>
+    <?php include_once("nav.php"); ?> 
+
     <!-- Categorie navigatie -->
     <nav class="category-nav">
-        <a href="products.php">Alle Categorieën</a>
-        <a href="products.php?category=hond" <?php echo $selectedCategory == 'hond' ? 'class="active"' : ''; ?>><i class="fas fa-dog"></i> Hond</a>
-        <a href="products.php?category=kat" <?php echo $selectedCategory == 'kat' ? 'class="active"' : ''; ?>><i class="fa-solid fa-cat"></i> Kat</a>
-        <a href="products.php?category=knaagdier" <?php echo $selectedCategory == 'knaagdier' ? 'class="active"' : ''; ?>><i class="fa-solid fa-otter"></i> Knaagdier</a>
-        <a href="products.php?category=vogel" <?php echo $selectedCategory == 'vogel' ? 'class="active"' : ''; ?>><i class="fa-solid fa-crow"></i> Vogel</a>
+        <a href="products.php" class="<?= !$selectedCategory ? 'active' : ''; ?>">Alle Categorieën</a>
+        <?php foreach ($categories as $category): ?>
+            <a href="products.php?category=<?= urlencode($category['name']); ?>" class="<?= $selectedCategory === $category['name'] ? 'active' : ''; ?>">
+                <?php if (!empty($category['icon'])): ?>
+                    <i class="<?= htmlspecialchars($category['icon']); ?>"></i>
+                <?php endif; ?>
+                <?= htmlspecialchars(ucfirst($category['name'])); ?>
+            </a>
+        <?php endforeach; ?>
     </nav>
 
     <h1>Producten</h1>
@@ -62,15 +68,15 @@ if ($searchTerm) {
         <div class="product-grid">
             <?php foreach ($products as $product): ?>
                 <article>
-                    <a href="product_detail.php?id=<?php echo htmlspecialchars($product['id']); ?>">
-                        <h2><?php echo htmlspecialchars($product['title']); ?></h2>
-                        <p>Categorie: <?php echo htmlspecialchars($product['categorie']); ?></p>
+                    <a href="product_detail.php?id=<?= htmlspecialchars($product['id']); ?>">
+                        <h2><?= htmlspecialchars($product['title']); ?></h2>
+                        <p>Categorie: <?= htmlspecialchars($product['category_name']); ?></p> <!-- Gebruik category_name -->
                         <?php if (!empty($product['image'])): ?>
-                            <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" style="max-width: 200px; height: auto;">
+                            <img src="<?= htmlspecialchars($product['image']); ?>" alt="<?= htmlspecialchars($product['title']); ?>" style="max-width: 200px; height: auto;">
                         <?php else: ?>
                             <p>No image available</p>
                         <?php endif; ?>
-                        <h2>€<?php echo number_format($product['price'], 2); ?></h2>
+                        <h2>€<?= number_format($product['price'], 2); ?></h2>
                     </a>
                 </article>
             <?php endforeach; ?>

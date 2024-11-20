@@ -29,6 +29,7 @@ $products = Product::getAll(); // Je kan hier ook een andere manier gebruiken om
     <?php include_once("nav.php"); ?>
 </head>
 <body>
+    <!-- Introductie sectie -->
     <section class="intro">
         <div class="container">
             <h1>Welkom bij de Webshop!</h1>
@@ -36,6 +37,7 @@ $products = Product::getAll(); // Je kan hier ook een andere manier gebruiken om
         </div>
     </section>
 
+    <!-- Aanbevolen producten sectie -->
     <section class="featured-products">
         <div class="container">
             <h2>Onze aanbevolen producten</h2>
@@ -45,17 +47,17 @@ $products = Product::getAll(); // Je kan hier ook een andere manier gebruiken om
                 <?php else: ?>
                     <?php foreach ($products as $product): ?>
                         <article>
-                            <a href="product_detail.php?id=<?php echo htmlspecialchars($product['id']); ?>" class="product-link">
-                                <h3><?php echo htmlspecialchars($product['title']); ?></h3>
-                                <p>Categorie: <?php echo htmlspecialchars($product['categorie']); ?></p>
-                                <?php if (!empty($product['image'])): ?>
-                                    <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>" class="product-image">
-                                <?php else: ?>
-                                    <p>Geen afbeelding beschikbaar</p>
-                                <?php endif; ?>
-                                <h4>€<?php echo number_format($product['price'], 2); ?></h4>
-                            </a>
-                        </article>
+                    <a href="product_detail.php?id=<?= htmlspecialchars($product['id']); ?>">
+                        <h2><?= htmlspecialchars($product['title']); ?></h2>
+                        <p>Categorie: <?= htmlspecialchars($product['category_name']); ?></p> <!-- Gebruik category_name -->
+                        <?php if (!empty($product['image'])): ?>
+                            <img src="<?= htmlspecialchars($product['image']); ?>" alt="<?= htmlspecialchars($product['title']); ?>" style="max-width: 200px; height: auto;">
+                        <?php else: ?>
+                            <p>No image available</p>
+                        <?php endif; ?>
+                        <h2>€<?= number_format($product['price'], 2); ?></h2>
+                    </a>
+                </article>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
@@ -63,6 +65,7 @@ $products = Product::getAll(); // Je kan hier ook een andere manier gebruiken om
         </div>
     </section>
 
+    <!-- Footer -->
     <footer>
         <?php include_once("footer.php"); ?> 
     </footer>

@@ -1,7 +1,12 @@
 <?php
 
-use Web\XD\Product; 
-use Web\XD\Db; 
+include_once(__DIR__ . "/classes/Db.php");
+include_once(__DIR__ . "/classes/Category.php");
+include_once(__DIR__ . "/classes/Product.php");
+
+use Web\XD\Category;
+use Web\XD\Product;
+use Web\XD\Db;
 
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
@@ -9,19 +14,19 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_
     exit;
 }
 
-include_once(__DIR__ . "/classes/Product.php");
-
 $error = "";
 $success = "";
 
+// Haal de categorieën op uit de database
+$categories = Category::getAllCategories();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
-        // Nieuw product object maken
         $product = new Product();
-        $product->setTitle($_POST['title']);
-        $product->setPrice($_POST['price']);
-        $product->setCategory($_POST['category']);
-        $product->setDescription($_POST['description']);
+        $product->setTitle($_POST['title'])
+                ->setPrice($_POST['price'])
+                ->setCategoryId($_POST['category'])
+                ->setDescription($_POST['description']);
 
         // Afbeelding uploaden
         $product->uploadImage($_FILES['image']);
@@ -45,20 +50,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
     <link rel="stylesheet" href="webshop.css">
-    <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
 </head>
 <body>
-
-    <header>
-        <nav class="nav">
-            <div>
-                <a href="admin.php">Admin Panel</a> |
-                <a href="addProduct.php">Add Product</a> |
-                <a href="products_admin.php">Products</a>
-            </div>
-            <a href="logout.php" class="logout">Log Out</a>
-        </nav>
-    </header>
+    <?php include_once("nav_admin.php"); ?>
 
     <div class="container add-product-page">
         <h1>Add New Product</h1>
@@ -86,10 +80,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="category">Category</label>
                 <select id="category" name="category" required>
                     <option value="">Select a category</option>
-                    <option value="hond">Hond</option>
-                    <option value="kat">Kat</option>
-                    <option value="knaagdier">Knaagdier</option>
-                    <option value="vogel">Vogel</option>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?php echo $category['id']; ?>">
+                            <?php echo htmlspecialchars($category['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 

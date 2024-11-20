@@ -1,24 +1,24 @@
-<?php 
-
+<?php
 use Web\XD\Product;
-use Web\XD\Db; 
+use Web\XD\Db;
+
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");
+
 session_start();
 
-if (!isset($_SESSION['loggedin'])) {
+// Controleer of de gebruiker is ingelogd
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     header("Location: login.php");
     exit;
 }
 
+// Haal het product ID uit de URL
 if (isset($_GET['id'])) {
     $productId = (int)$_GET['id'];
-    $conn = Db::getConnection();
 
-    $statement = $conn->prepare('SELECT * FROM products WHERE id = :id');
-    $statement->bindValue(':id', $productId, PDO::PARAM_INT);
-    $statement->execute();
-    $product = $statement->fetch(PDO::FETCH_ASSOC);
+    // Haal het product op via de Product klasse
+    $product = Product::getById($productId);
 
     if (!$product) {
         echo "Product niet gevonden.";
@@ -50,11 +50,11 @@ if (isset($_GET['id'])) {
                 <div class="no-image">Afbeelding niet beschikbaar</div>
             <?php endif; ?>
         </div>
-        
+
         <div class="product-info">
             <h1><?php echo htmlspecialchars($product['title']); ?></h1>
             <p class="product-price">€<?php echo number_format($product['price'], 2); ?></p>
-            <p class="product-category"><strong>Categorie:</strong> <?php echo htmlspecialchars($product['categorie']); ?></p>
+            <p class="product-category"><strong>Categorie:</strong> <?php echo htmlspecialchars($product['category_name']); ?></p>
 
             <div class="product-description">
                 <h2>Beschrijving</h2>

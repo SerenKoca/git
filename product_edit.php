@@ -4,6 +4,7 @@ include_once(__DIR__ . "/classes/Product.php");
 use Web\XD\Product;
 use Web\XD\Db;
 session_start();
+
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     header("Location: index.php");
     exit;
@@ -24,6 +25,9 @@ if ($product === null) {
     exit;
 }
 
+// Haal de categorieën op uit de database
+$categories = Product::getCategories(); // Haal alle categorieën uit de database
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verwerk formulier en update het product
     $title = $_POST['title'];
@@ -32,9 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $image = $_POST['image']; // Optionally, handle image upload
     $description = $_POST['description']; // Haal de beschrijving op
 
+    // Werk het product bij in de database
     Product::update($productId, $title, $category, $price, $image, $description);
 
-    header("Location: products_admin.php"); // Redirect to products list after update
+    // Redirect naar de productlijst na het bijwerken
+    header("Location: products_admin.php");
     exit;
 }
 ?>
@@ -50,25 +56,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
 </head>
 <body>
-    <h1>Wijzig Product</h1>
 
-    <form action="product_edit.php?id=<?php echo $product['id']; ?>" method="POST">
-        <label for="title">Product Titel:</label>
-        <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($product['title']); ?>" required>
+<header>
+<?php include_once("nav_admin.php"); ?>
+</header>
 
-        <label for="category">Categorie:</label>
-        <input type="text" name="category" id="category" value="<?php echo htmlspecialchars($product['categorie']); ?>" required>
+<h1>Wijzig Product</h1>
 
-        <label for="price">Prijs (€):</label>
-        <input type="number" name="price" id="price" value="<?php echo htmlspecialchars($product['price']); ?>" required step="0.01">
+<form action="product_edit.php?id=<?php echo $product['id']; ?>" method="POST">
+    <label for="title">Product Titel:</label>
+    <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($product['title']); ?>" required>
 
-        <label for="image">Afbeelding URL:</label>
-        <input type="text" name="image" id="image" value="<?php echo htmlspecialchars($product['image']); ?>">
+    <label for="category">Categorie:</label>
+    <select name="category" id="category" required>
+        <option value="">Selecteer een categorie</option>
+        <?php foreach ($categories as $category): ?>
+            <option value="<?php echo $category['id']; ?>" <?php echo $category['id'] == $product['category_id'] ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($category['name']); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
 
-        <label for="description">Beschrijving:</label>
-        <textarea name="description" id="description" required><?php echo htmlspecialchars($product['description']); ?></textarea>
+    <label for="price">Prijs (€):</label>
+    <input type="number" name="price" id="price" value="<?php echo htmlspecialchars($product['price']); ?>" required step="0.01">
 
-        <button type="submit">Wijzig Product</button>
-    </form>
+    <label for="image">Afbeelding URL:</label>
+    <input type="text" name="image" id="image" value="<?php echo htmlspecialchars($product['image']); ?>">
+
+    <label for="description">Beschrijving:</label>
+    <textarea name="description" id="description" required><?php echo htmlspecialchars($product['description']); ?></textarea>
+
+    <button type="submit">Wijzig Product</button>
+</form>
+
 </body>
 </html>

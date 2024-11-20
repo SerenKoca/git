@@ -1,0 +1,15 @@
+{
+    "name": "kocas/git",
+    "autoload": {
+        "psr-4": {
+            "Kocas\\Git\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Seren Koca",
+            "email": "r0937023@student.thomasmore.be"
+        }
+    ],
+    "require": {}
+}
