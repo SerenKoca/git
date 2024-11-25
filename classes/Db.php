@@ -18,7 +18,7 @@ class Db {
             try {
                 // Zorg ervoor dat je \PDO gebruikt, zodat het de globale PHP-klasse is
                 $host = "webshopschool.mysql.database.azure.com";
-                $db = "webshopschool";
+                $db = "webshop";
                 $user = "Seren";
                 $pass = "MLB11il!";
                 self::$conn = new \PDO("mysql:host=$host;dbname=$db", $user, $pass);  
