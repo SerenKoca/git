@@ -8,11 +8,7 @@ $options = array(
     \PDO::MYSQL_ATTR_SSL_CA => $pathToSSL
 );
 
-$host = "webshopschool.mysql.database.azure.com";
-$db = "webshop";
-$user = "Seren";
-$pass = "MLB11il!";
-$db = new \PDO("mysql:host=$host;dbname=$db", $user, $pass, $options);
+
 
 
 class Db {
