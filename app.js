@@ -1,28 +1,34 @@
-document.querySelector('#btnAddComment').addEventListener('click', function() {
-    let postId = this.dataset.postid; // Get the postId from the button's data attribute
-    let text = document.querySelector('#commentText').value; // Get the comment text
 
-    // Post to the server (ajax)
+document.querySelector('#btnAddComment').addEventListener('click', function (e) {
+    e.preventDefault(); // Zorg ervoor dat de link niet volgt
+    let postId = this.dataset.postid;
+    let text = document.querySelector('#commentText').value;
+
+    if (text.trim() === '') {
+        alert('Comment text cannot be empty');
+        return;
+    }
+
     let formData = new FormData();
     formData.append('text', text);
-    formData.append('postId', postId);
+    formData.append('productId', postId);
 
     fetch('ajax/savecomment.php', {
         method: 'POST',
         body: formData
     })
-        .then(response => response.json())
-        .then(result => {
-            if (result.status === 'success') {
-                // If the comment is saved successfully, add it to the list
-                let newComment = document.createElement('li');
-                newComment.innerHTML = `<strong>You:</strong> ${text}`; // Show the comment text with a username
-                document.querySelector('.post__comments__list').appendChild(newComment);
-            } else {
-                alert('Error saving comment: ' + result.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    .then(response => response.json())
+    .then(result => {
+        if (result.status === 'success') {
+            let newComment = document.createElement('li');
+            newComment.textContent = result.body;
+            document.querySelector('.post__comments__list').appendChild(newComment);
+            document.querySelector('#commentText').value = ''; // Maak het invoerveld leeg
+        } else {
+            alert(result.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 });

@@ -1,5 +1,10 @@
 <?php
 namespace Web\XD;
+namespace Web\XD\Db;
+
+use Web\XD\Db;
+
+ 
 
 class User {
     protected $email;
@@ -88,6 +93,8 @@ class User {
             throw new Exception("Er is een fout opgetreden bij het bijwerken van het wachtwoord.");
         }
     }
+
+   
 }
 
 ?>

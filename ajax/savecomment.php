@@ -1,35 +1,33 @@
 <?php
-include_once(__DIR__ . '/../classes/Comment.php');
-session_start();
+   
+namespace Web\XD;
+    include_once(__DIR__ . '/../classes/Comment.php');
+    use Web\XD\Comment;
+    session_start();
 
-if (isset($_POST['postId'], $_POST['text'])) {
-    if (isset($_SESSION['user_id'])) {
-        // New comment
-        $comment = new Comment();
-        $comment->setPostId($_POST['postId']);
-        $comment->setText($_POST['text']);
-        $comment->setUserId($_SESSION['user_id']); // Ensure you get the correct user ID from the session
-
-        // Save the comment
-        if ($comment->save()) {
-            $response = [
-                'status' => 'success',
-                'message' => 'Comment saved successfully'
-            ];
-        } else {
-            $response = [
-                'status' => 'error',
-                'message' => 'Failed to save comment'
-            ];
-        }
-    } else {
-        $response = [
-            'status' => 'error',
-            'message' => 'User is not logged in'
-        ];
+    if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+        header("Location: login.php");
+        exit;
     }
 
-    header('Content-Type: application/json');
-    echo json_encode($response);
-}
-?>
+    if(!empty($_POST)){
+        //new comment
+        $c = new Comment();
+      
+        $c->setProductId($_POST['productId']);
+        $c->setText($_POST['text']);
+        $c->setUserId(22); //$_SESSION
+
+        // save()
+        $c->save();
+
+        //succes toegevoegd
+        $response = [
+            'status' => 'success',
+            'body' => htmlspecialchars($c->getText()),
+            'message' => 'Comment saved'
+        ];
+
+        header('Content-Type: application/json');
+        echo json_encode($response); //{"status":"success","body":"<script>alert('xss')</script>","message":"Comment saved"}
+    }

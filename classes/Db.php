@@ -21,6 +21,10 @@ class Db {
                 $db = "webshop";
                 $user = "Seren";
                 $pass = "MLB11il!";
+                /*$host = "localhost";
+                $db = "webshop";
+                $user = "root";
+                $pass = "";*/
                 self::$conn = new \PDO("mysql:host=$host;dbname=$db", $user, $pass);  
                 self::$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION); 
             } catch (\PDOException $e) {

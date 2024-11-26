@@ -1,12 +1,9 @@
 <?php
-
-include_once(__DIR__ . "/Db.php");
-
-// Comment.php
+namespace Web\XD;
 
 class Comment {
     private $text;
-    private $postId;
+    private $productId;
     private $userId;
 
     public function getText() {
@@ -18,12 +15,12 @@ class Comment {
         return $this;
     }
 
-    public function getPostId() {
-        return $this->postId;
+    public function getProductId() {
+        return $this->productId;
     }
 
-    public function setPostId($postId) {
-        $this->postId = $postId;
+    public function setProductId($productId) {
+        $this->productId = $productId;
         return $this;
     }
 
@@ -36,36 +33,39 @@ class Comment {
         return $this;
     }
 
-    // Save the comment to the database
     public function save() {
-        $conn = new PDO('mysql:host=localhost;dbname=webshop', 'root', '');
-        $statement = $conn->prepare('INSERT INTO comments (text, postId, userId) VALUES (:text, :postId, :userId)');
+        try {
+            $conn = new \PDO('mysql:host=localhost;dbname=webshop', 'root', ''); // Gebruik de volledig gekwalificeerde \PDO
+            $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        $text = $this->getText();
-        $postId = $this->getPostId();
-        $userId = $this->getUserId();
+            $statement = $conn->prepare(
+                'INSERT INTO comments (text, productId, userId) VALUES (:text, :productId, :userId)'
+            );
+            $statement->bindValue(":text", $this->getText());
+            $statement->bindValue(":productId", $this->getProductId());
+            $statement->bindValue(":userId", $this->getUserId());
 
-        $statement->bindValue(":text", $text);
-        $statement->bindValue(":postId", $postId);
-        $statement->bindValue(":userId", $userId);
-
-        return $statement->execute();
+            return $statement->execute();
+        } catch (\PDOException $e) { // Gebruik de volledig gekwalificeerde \PDOException
+            die("Database error: " . $e->getMessage());
+        }
     }
 
-    // Get all comments for a product (postId)
-    public static function getAll($postId) {
-        $conn = new PDO('mysql:host=localhost;dbname=webshop', 'root', '');
-        $statement = $conn->prepare('
-            SELECT comments.*, users.email AS username 
-            FROM comments 
-            JOIN users ON comments.userId = users.id 
-            WHERE postId = :postId
-        ');
-        $statement->bindValue(":postId", $postId);
-        $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    public static function getAll($productId) {
+        try {
+            $conn = new \PDO('mysql:host=localhost;dbname=webshop', 'root', ''); // Gebruik de volledig gekwalificeerde \PDO
+            $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+            $statement = $conn->prepare('SELECT * FROM comments WHERE productId = :productId');
+            $statement->bindValue(":productId", $productId);
+            $statement->execute();
+
+            return $statement->fetchAll(\PDO::FETCH_ASSOC); // Gebruik de volledig gekwalificeerde \PDO::FETCH_ASSOC
+        } catch (\PDOException $e) { // Gebruik de volledig gekwalificeerde \PDOException
+            die("Database error: " . $e->getMessage());
+        }
     }
+
+    
+
 }
-
-
-?>

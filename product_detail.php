@@ -1,13 +1,15 @@
 <?php
 use Web\XD\Product;
 use Web\XD\Db;
+use Web\XD\Comment;
 
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");
 include_once(__DIR__ . '/classes/Comment.php');
+include_once(__DIR__ . '/classes/User.php');
 
 session_start();
-    $allComments = Comment::getAll($productId);
+    
 
 
 // Controleer of de gebruiker is ingelogd
@@ -22,6 +24,7 @@ if (isset($_GET['id'])) {
 
     // Haal het product op via de Product klasse
     $product = Product::getById($productId);
+    $allComments = Comment::getAll($productId);
 
     if (!$product) {
         echo "Product niet gevonden.";
@@ -67,12 +70,12 @@ if (isset($_GET['id'])) {
         <div class="post__comments">
     <div class="post__comments__form">
         <input type="text" id="commentText" placeholder="What do you think about this product?">
-        <a href="#" class="btn" id="btnAddComment" data-postid="<?php echo $productId; ?>">Add Comment</a>
+        <a href="#" class="btn" id="btnAddComment" data-postid="<?php echo $productId; ?>">Voeg commentaar toe</a>
     </div>
 
     <ul class="post__comments__list">
-        <?php foreach($allComments as $comment): ?>
-            <li><strong><?php echo htmlspecialchars($comment['username']); ?>:</strong> <?php echo htmlspecialchars($comment['text']); ?></li>  
+        <?php foreach ($allComments as $comment): ?>
+            <li><?php echo htmlspecialchars($comment['text'], ENT_QUOTES, 'UTF-8'); ?></li>
         <?php endforeach; ?>
     </ul>
 </div>
