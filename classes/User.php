@@ -92,7 +92,8 @@ class User {
         } else {
             throw new Exception("Er is een fout opgetreden bij het bijwerken van het wachtwoord.");
         }
-    }
+    }//cimment
+    
 
    
 }
