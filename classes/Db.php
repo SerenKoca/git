@@ -17,14 +17,14 @@ class Db {
         if (self::$conn == null) {
             try {
                 // Zorg ervoor dat je \PDO gebruikt, zodat het de globale PHP-klasse is
-                $host = "webshopschool.mysql.database.azure.com";
+                /*$host = "webshopschool.mysql.database.azure.com";
                 $db = "webshop";
                 $user = "Seren";
-                $pass = "MLB11il!";
-                /*$host = "localhost";
+                $pass = "MLB11il!";*/
+                $host = "localhost";
                 $db = "webshop";
                 $user = "root";
-                $pass = "";*/
+                $pass = "";
                 self::$conn = new \PDO("mysql:host=$host;dbname=$db", $user, $pass);  
                 self::$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION); 
             } catch (\PDOException $e) {
