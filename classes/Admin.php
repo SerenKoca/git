@@ -1,6 +1,10 @@
 <?php
 
-namespace Web\XD;
+namespace Kocas\Git;
+
+include_once(__DIR__ . '\Db.php');
+
+use Kocas\Git\Db;
 
 class Admin extends User {
 

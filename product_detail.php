@@ -1,7 +1,7 @@
 <?php
-use Web\XD\Product;
-use Web\XD\Db;
-use Web\XD\Comment;
+use Kocas\Git\Product;
+use Kocas\Git\Db;
+use Kocas\Git\Comment;
 
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");

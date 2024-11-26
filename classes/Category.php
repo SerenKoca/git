@@ -1,8 +1,10 @@
 <?php
 
-namespace Web\XD;
+namespace Kocas\Git;
 
-use Web\XD\Db;
+include_once(__DIR__ . '\Db.php');
+
+use Kocas\Git\Db;
 
 class Category {
     // Voeg een nieuwe categorie toe (met icoon)

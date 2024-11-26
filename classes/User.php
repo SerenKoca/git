@@ -1,8 +1,10 @@
 <?php
-namespace Web\XD;
-namespace Web\XD\Db;
+namespace Kocas\Git;
 
-use Web\XD\Db;
+include_once(__DIR__ . '\Db.php');
+
+use Kocas\Git\Db;
+
 
  
 
@@ -25,7 +27,7 @@ class User {
 
     public function setEmail($email) {
         if (empty($email)) {
-            throw new Exception("Email is verplicht.");
+            echo ("Email is verplicht.");
         }
         $this->email = $email;
         return $this;

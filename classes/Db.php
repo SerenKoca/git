@@ -1,5 +1,5 @@
 <?php
-namespace Web\XD;
+namespace Kocas\Git;
 
 $pathToSSL = __DIR__ . '/CA.pem';
 $options = array(

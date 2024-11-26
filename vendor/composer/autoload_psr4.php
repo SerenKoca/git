@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Kocas\\Git\\' => array($baseDir . '/src'),
+    'Kocas\\Git\\' => array($baseDir . '/classes'),
 );

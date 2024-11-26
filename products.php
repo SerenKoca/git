@@ -1,6 +1,6 @@
 <?php 
-use Web\XD\Product;
-use Web\XD\Db;
+use Kocas\Git\Product;
+use Kocas\Git\Db;
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");
 

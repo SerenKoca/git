@@ -5,7 +5,7 @@ include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/User.php");
 include_once(__DIR__ . "/classes/Customer.php");
 
-use Web\XD\Customer;
+use Kocas\Git\Customer;
 
 $error1 = "";
 

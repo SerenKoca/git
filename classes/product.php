@@ -1,9 +1,10 @@
 <?php
 
-namespace Web\XD;
+namespace Kocas\Git;
 
-use Web\XD\Db;
-use Exception;
+include_once(__DIR__ . '\Db.php');
+
+use Kocas\Git\Db;
 
 class Product {
     private $title;

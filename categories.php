@@ -2,7 +2,7 @@
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Category.php");
 
-use Web\XD\Category;
+use Kocas\Git\Category;
 
 session_start();
 

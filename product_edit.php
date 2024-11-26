@@ -1,8 +1,8 @@
 <?php
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");
-use Web\XD\Product;
-use Web\XD\Db;
+use Kocas\Git\Product;
+use Kocas\Git\Db;
 session_start();
 
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {

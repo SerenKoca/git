@@ -1,5 +1,5 @@
 <?php
-use Web\XD\User;
+use Kocas\Git\User;
 session_start();
 
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {

@@ -1,16 +1,19 @@
 <?php
 
+include_once(__DIR__ . '/classes/User.php');
+include_once(__DIR__ . '/classes/Admin.php');
+
+// Gebruik de namespace
 use Kocas\Git\User;
-include_once(__DIR__ . "/classes/Db.php");
-include_once(__DIR__ . "/classes/User.php");
-include_once(__DIR__ . "/classes/Admin.php"); // Zorg ervoor dat je de Admin klasse laadt
+use Kocas\Git\Admin;
+
 session_start(); // Start de sessie
 
 if (!empty($_POST)) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $user = new Web\XD\User();
+    $user = new Kocas\Git\User();
     $user->setEmail($email); // Stel het e-mailadres in
 
     try {
@@ -19,7 +22,7 @@ if (!empty($_POST)) {
             $_SESSION["email"] = $email;
 
             // Maak een Admin object om te controleren of het een admin is
-            $admin = new Web\XD\Admin(); // Maak een Admin object aan
+            $admin = new Kocas\Git\Admin(); // Maak een Admin object aan
 
             // Stel het e-mail in voor de admin om toegang te krijgen
             $admin->setEmail($email);

@@ -2,7 +2,7 @@
     "name": "kocas/git",
     "autoload": {
         "psr-4": {
-            "Kocas\\Git\\": "src/"
+            "Kocas\\Git\\": "classes/"
         }
     },
     "authors": [

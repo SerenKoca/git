@@ -1,6 +1,6 @@
 <?php
 
-namespace Web\XD;
+namespace Kocas\Git;
 
 use Exception;
 
