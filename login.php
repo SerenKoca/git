@@ -1,6 +1,6 @@
 <?php
 
-use Web\XD\User;
+use Kocas\Git\User;
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/User.php");
 include_once(__DIR__ . "/classes/Admin.php"); // Zorg ervoor dat je de Admin klasse laadt

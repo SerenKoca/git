@@ -1,8 +1,8 @@
 <?php 
 
 use Web\XD\Product; 
-include_once(__DIR__ . "../classes/Db.php");
-include_once(__DIR__ . "../classes/Product.php");
+include_once(__DIR__ . "/classes/Db.php");
+include_once(__DIR__ . "/classes/Product.php");
 
 session_start();
 
