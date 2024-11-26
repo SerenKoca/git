@@ -6,6 +6,8 @@ use Exception;
 
 class Customer extends User {
 
+    
+
     public function save() {
         if (empty($this->email) || empty($this->password)) {
             throw new Exception("Email en wachtwoord zijn vereist.");

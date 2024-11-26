@@ -12,6 +12,7 @@ session_start(); // Start de sessie
 if (!empty($_POST)) {
     $email = $_POST['email'];
     $password = $_POST['password'];
+    
 
     $user = new Kocas\Git\User();
     $user->setEmail($email); // Stel het e-mailadres in

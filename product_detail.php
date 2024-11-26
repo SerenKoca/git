@@ -9,8 +9,6 @@ include_once(__DIR__ . '/classes/Comment.php');
 include_once(__DIR__ . '/classes/User.php');
 
 session_start();
-    
-
 
 // Controleer of de gebruiker is ingelogd
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
