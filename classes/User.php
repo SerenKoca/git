@@ -1,7 +1,7 @@
 <?php
 namespace Kocas\Git;
 
-include_once(__DIR__ . '\Db.php');
+include_once(__DIR__ . '/Db.php');
 
 use Kocas\Git\Db;
 
