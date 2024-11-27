@@ -1,7 +1,8 @@
 <?php 
-use Kocas\Git\Product;
 
 include_once(__DIR__ . "/classes/Product.php");
+
+use Kocas\Git\Product;
 
 session_start();
 

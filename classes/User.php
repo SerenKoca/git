@@ -6,8 +6,6 @@ include_once(__DIR__ . '/Db.php');
 use Kocas\Git\Db;
 
 
- 
-
 class User {
     protected $email;
     protected $password;
