@@ -27,8 +27,8 @@ class Db {
                 $pass = "RkqSzzWiJnwDjxpCsuNydvdSBCWpbGxG"; // Het wachtwoord van Railway
                 $port = "26217"; // De poort die Railway gebruikt
 
-// Maak de PDO-verbinding
-self::$conn = new \PDO("mysql:host=$host;port=$port;dbname=$db", $user, $pass);
+                // Maak de PDO-verbinding
+                self::$conn = new \PDO("mysql:host=$host;port=$port;dbname=$db", $user, $pass);
                 self::$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION); 
             } catch (\PDOException $e) {
                 throw new \Exception("Connection failed: " . $e->getMessage());
