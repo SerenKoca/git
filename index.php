@@ -1,8 +1,9 @@
 <?php 
-include_once(__DIR__ . '/vendor/autoload.php');
+
+include_once(__DIR__ . '/classes/Db.php');
+include_once(__DIR__ . '/classes/Product.php');
+
 use Kocas\Git\Product; 
-include_once(__DIR__ . "/classes/Db.php");
-include_once(__DIR__ . "/classes/Product.php");
 
 session_start();
 

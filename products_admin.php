@@ -1,8 +1,8 @@
 <?php 
-include_once(__DIR__ . '/classes/Db.php');
+
 include_once(__DIR__ . '/classes/Product.php');
 
-use Kocas\Git\Db;
+
 use Kocas\Git\Product;
 
 session_start();
