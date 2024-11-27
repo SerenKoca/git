@@ -73,13 +73,13 @@ class Product {
 
     // Methode voor het uploaden van een afbeelding
     public function uploadImage($file) {
-        $uploadDir = 'uploads/';
+        // Gebruik tijdelijke opslag in Railway
+        $uploadDir = '/tmp/uploads/';
         $maxFileSize = 50 * 1024 * 1024; // 50 MB als maximale bestandsgrootte
     
         // Controleer of de uploads-map bestaat, zo niet, maak deze dan aan
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);  // Maak de map aan met de juiste rechten
-            chown($uploadDir, 'www-data');   // Zet de eigenaar van de map naar 'www-data' (webservergebruiker)
         }
     
         // Controleer of de map schrijfrechten heeft
@@ -117,9 +117,6 @@ class Product {
             throw new Exception("Er is een fout opgetreden bij het uploaden van de afbeelding.");
         }
     }
-    
-    
-    
     
 
     // Methode om alle producten op te halen
