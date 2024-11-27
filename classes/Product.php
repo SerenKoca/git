@@ -5,6 +5,7 @@ namespace Kocas\Git;
 include_once(__DIR__ . '/Db.php');
 
 use Kocas\Git\Db;
+use Exception;  
 
 class Product {
     private $title;
@@ -75,9 +76,15 @@ class Product {
         $uploadDir = 'uploads/';
         $maxFileSize = 50 * 1024 * 1024; // 50 MB als maximale bestandsgrootte
     
-        // Controleer of de uploads-map bestaat, zo niet, maak deze dan aan
+        // Controleer of de uploads-map bestaat, zo niet, maak deze dan aan met juiste rechten
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
+            chown($uploadDir, 'www-data');  // Zet de eigenaar naar de webservergebruiker
+        }
+    
+        // Controleer of de map schrijfrechten heeft
+        if (!is_writable($uploadDir)) {
+            throw new Exception("De map 'uploads/' is niet beschrijfbaar. Controleer de bestandsrechten.");
         }
     
         // Controleer of er geen uploadfout is
@@ -110,6 +117,7 @@ class Product {
             throw new Exception("Er is een fout opgetreden bij het uploaden van de afbeelding.");
         }
     }
+    
     
 
     // Methode om alle producten op te halen
