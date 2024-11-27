@@ -120,6 +120,7 @@ class Product {
     
     
     
+    
 
     // Methode om alle producten op te halen
     public static function getAll() {
