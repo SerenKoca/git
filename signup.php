@@ -36,6 +36,8 @@ if (!empty($_POST)) {
     <title>Sign Up</title>
     <link rel="stylesheet" href="webshop.css">
     <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
+    <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
+
 </head>
 <body>
     <div id="app">

@@ -1,3 +1,5 @@
+<link rel="icon" type="image/x-icon" href="uploads/paw.avif">
+
 <nav class="nav">
         <div>
             <a href="admin.php">Admin Panel</a> |

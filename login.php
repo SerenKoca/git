@@ -58,6 +58,8 @@ if (!empty($_POST)) {
     <title>Log In</title>
     <link rel="stylesheet" href="webshop.css">
     <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
+    <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
+
 </head>
 <body>
 
