@@ -20,6 +20,8 @@
         <div class="nav_username">
             <a href="#" class="user_nav"><?php echo "Username: " . $_SESSION['email']; ?></a> |
             <a href="change_password.php">Change Password</a> |
+            <a href="winkelmandje.php">Winkelmandje</a> |
+            <a href="order.php">order</a> |
             <a href="logout.php">Log Out</a>
         </div>
     </nav>

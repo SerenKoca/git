@@ -61,6 +61,12 @@ if (isset($_GET['id'])) {
                 <p><?php echo htmlspecialchars($product['description'] ?? "Geen beschrijving beschikbaar."); ?></p>
             </div>
 
+            <form method="post" action="winkelmandje.php">
+                <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                <input type="number" name="quantity" value="1" min="1">
+                <button type="submit" name="add_to_cart">Toevoegen aan winkelwagen</button>
+            </form>
+
             <a href="products_admin.php" class="back-button">Terug naar producten</a>
         </div>
     </div>

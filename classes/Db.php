@@ -30,6 +30,7 @@ class Db {
                 // Maak de PDO-verbinding
                 self::$conn = new \PDO("mysql:host=$host;port=$port;dbname=$db", $user, $pass);
                 self::$conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION); 
+                self::$conn->exec("SET time_zone = 'Europe/Amsterdam'");
             } catch (\PDOException $e) {
                 throw new \Exception("Connection failed: " . $e->getMessage());
             }

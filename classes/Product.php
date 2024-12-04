@@ -71,46 +71,31 @@ class Product {
     }
 
     // Methode voor het uploaden van een afbeelding
-   public function uploadImage($file) {
-    $uploadDir = 'uploads/';
-    $maxFileSize = 50 * 1024 * 1024; // 50 MB als maximale bestandsgrootte
-
-    // Controleer of de uploads-map bestaat, zo niet, maak deze dan aan
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
-    }
-
-    // Controleer of er geen uploadfout is
-    if ($file['error'] === UPLOAD_ERR_OK) {
-        
-        // Controleer of de bestandsgrootte groter is dan de limiet
-        if ($file['size'] > $maxFileSize) {
-            throw new Exception("Bestand is te groot. Maximale bestandsgrootte is 50 MB.");
+    public function uploadImage($file) {
+        $uploadDir = 'uploads/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
         }
 
-        // Bestandspad instellen voor de upload
-        $uploadFile = $uploadDir . basename($file['name']);
-        $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
+        if ($file['error'] === UPLOAD_ERR_OK) {
+            $uploadFile = $uploadDir . basename($file['name']);
+            $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
+            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
-        // Alleen bepaalde bestandstypes toestaan
-        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+            if (!in_array($imageFileType, $allowedTypes)) {
+                throw new Exception("Only JPG, JPEG, PNG & GIF files are allowed.");
+            }
 
-        if (!in_array($imageFileType, $allowedTypes)) {
-            throw new Exception("Alleen JPG, JPEG, PNG & GIF bestanden zijn toegestaan.");
-        }
-
-        // Bestand verplaatsen naar de doelmap
-        if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
-            $this->setImage($uploadFile); // Sla het bestandspad op
-            return true;
+            if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
+                $this->setImage($uploadFile);
+                return true;
+            } else {
+                throw new Exception("Failed to upload image.");
+            }
         } else {
-            throw new Exception("Fout bij het uploaden van het bestand.");
+            throw new Exception("Image must be uploaded.");
         }
-    } else {
-        throw new Exception("Er is een fout opgetreden bij het uploaden van de afbeelding.");
     }
-}
-
 
     // Methode om alle producten op te halen
     public static function getAll() {

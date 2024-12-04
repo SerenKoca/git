@@ -1,5 +1,4 @@
 <?php
-
 include_once(__DIR__ . '/classes/User.php');
 include_once(__DIR__ . '/classes/Admin.php');
 
@@ -12,15 +11,18 @@ session_start(); // Start de sessie
 if (!empty($_POST)) {
     $email = $_POST['email'];
     $password = $_POST['password'];
-    
 
     $user = new Kocas\Git\User();
     $user->setEmail($email); // Stel het e-mailadres in
 
     try {
-        if ($user->canLogin($email, $password)) {
+        // Controleer of het login succesvol is en krijg de user_id terug
+        $userId = $user->canLogin($email, $password); // Haal de user_id op
+
+        if ($userId) {
             $_SESSION["loggedin"] = true;
             $_SESSION["email"] = $email;
+            $_SESSION["user_id"] = $userId; // Sla de user_id op in de sessie
 
             // Maak een Admin object om te controleren of het een admin is
             $admin = new Kocas\Git\Admin(); // Maak een Admin object aan
@@ -38,7 +40,6 @@ if (!empty($_POST)) {
                 header("Location: index.php");
                 exit;
             }
-
         } else {
             $error = true;
         }
@@ -46,6 +47,7 @@ if (!empty($_POST)) {
         $error = $e->getMessage();
     }
 }
+
 ?>
 
 <html>

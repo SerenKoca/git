@@ -2,13 +2,16 @@
 namespace Kocas\Git;
 
 include_once(__DIR__ . '/Db.php');
+include_once(__DIR__ . '/Order.php');
 
 use Kocas\Git\Db;
-
+use Kocas\Git\Order;
 
 class User {
-    protected $email;
-    protected $password;
+    private $id;
+    private $email;
+    private $password;
+    private $balance;
 
     public function __construct($email = null, $password = null) {
         if ($email) {
@@ -17,6 +20,15 @@ class User {
         if ($password) {
             $this->password = $password;
         }
+    }
+
+    public function getId() {
+        return $this->id;
+    }
+
+    public function setId($id) {
+        $this->id = $id;
+        return $this;
     }
 
     public function getEmail() {
@@ -53,13 +65,13 @@ class User {
 
     public function canLogin($p_email, $p_password) {
         $conn = Db::getConnection();
-        $statement = $conn->prepare("SELECT * FROM users WHERE email = :email");
+        $statement = $conn->prepare("SELECT id, password FROM users WHERE email = :email");
         $statement->bindValue(':email', $p_email);
         $statement->execute();
         $user = $statement->fetch(\PDO::FETCH_ASSOC);
 
         if ($user && password_verify($p_password, $user['password'])) {
-            return true;
+            return $user['id']; // Geef de user_id terug als de login succesvol is
         } else {
             return false;
         }
@@ -92,10 +104,77 @@ class User {
         } else {
             throw new Exception("Er is een fout opgetreden bij het bijwerken van het wachtwoord.");
         }
-    }//cimment
-    
-    
-   
-}
+    }
 
+    public function getBalance() {
+        return $this->balance;
+    }
+
+    public function setBalance($balance) {
+        if ($balance < 0) {
+            throw new Exception("Saldo kan niet negatief zijn.");
+        }
+        $this->balance = $balance;
+        return $this;
+    }
+
+    public function initializeBalance() {
+        $conn = Db::getConnection();
+        $statement = $conn->prepare("UPDATE users SET balance = 1000 WHERE email = :email");
+        $statement->bindValue(':email', $this->email);
+        return $statement->execute();
+    }
+
+    public function deductBalance($amount) {
+        // Haal de gegevens van de gebruiker opnieuw op om het laatste saldo te verkrijgen
+        $user = User::getUserById($this->id); // Haal de gebruiker op via ID
+        $currentBalance = $user['balance'];  // Het huidige saldo van de gebruiker
+    
+        // Debugging: Weergeven van het huidige saldo en af te trekken bedrag
+        echo "Huidig saldo: " . number_format($currentBalance, 2) . "<br>";  
+        echo "Af te trekken bedrag: " . number_format($amount, 2) . "<br>";  
+    
+        if ($currentBalance < $amount) {
+            throw new \Exception("Onvoldoende saldo.");
+        }
+    
+        // Verminder het saldo
+        $newBalance = $currentBalance - $amount;
+    
+        // Debugging: Weergeven van het nieuwe saldo
+        echo "Nieuw saldo na aftrekken: " . number_format($newBalance, 2) . "<br>";
+    
+        // Bijwerken van het saldo in de database
+        $conn = Db::getConnection();
+        $statement = $conn->prepare("UPDATE users SET balance = :balance WHERE id = :id");
+        $statement->bindValue(':balance', $newBalance);
+        $statement->bindValue(':id', $this->id);
+    
+        // Voer de query uit en controleer of het is gelukt
+        $executed = $statement->execute();
+        if ($executed) {
+            echo "Saldo succesvol bijgewerkt.<br>";
+        } else {
+            echo "Fout bij het bijwerken van saldo in de database.<br>";
+        }
+    }
+    
+    
+
+    public static function getUserByEmail($email) {
+        $conn = Db::getConnection();
+        $statement = $conn->prepare("SELECT * FROM users WHERE email = :email");
+        $statement->bindValue(':email', $email);
+        $statement->execute();
+        return $statement->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public static function getUserById($id) {
+        $conn = Db::getConnection();
+        $statement = $conn->prepare("SELECT * FROM users WHERE id = :id");
+        $statement->bindValue(':id', $id);
+        $statement->execute();
+        return $statement->fetch(\PDO::FETCH_ASSOC);
+    }
+}
 ?>
