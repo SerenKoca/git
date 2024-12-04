@@ -2,11 +2,12 @@
 
 namespace Kocas\Git;
 
+include_once(__DIR__ . '/Db.php');
+
 use Exception;
+use Kocas\Git\Db;
 
 class Customer extends User {
-
-    
 
     public function save() {
         if (empty($this->email) || empty($this->password)) {
@@ -14,7 +15,7 @@ class Customer extends User {
         }
 
         if ($this->emailExists()) {
-            throw new Exception("Email is al geregistreerd.");
+            throw new \Exception("Email is al geregistreerd.");
         }
 
         // Encrypt the password before saving
@@ -28,7 +29,6 @@ class Customer extends User {
 
         return $statement->execute();
     }
-
     // Andere methodes zoals getEmail(), setEmail(), getPassword(), etc.
 }
 ?>

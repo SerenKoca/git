@@ -1,5 +1,9 @@
 <?php 
+
+use Kocas\Git\User;
+
 include_once(__DIR__ . "/classes/User.php");
+
 session_start(); // Start de sessie
 
 // Controleer of de gebruiker is ingelogd
@@ -40,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wachtwoord Wijzigen</title>
     <link rel="stylesheet" href="webshop.css"> <!-- Gebruik dezelfde CSS-bestand -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
     <?php include_once("nav.php"); ?>   
 </head>

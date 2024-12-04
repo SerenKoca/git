@@ -106,6 +106,27 @@ class User {
         }
     }
 
+    public function save() {
+        if (empty($this->email) || empty($this->password)) {
+            throw new Exception("Email en wachtwoord zijn vereist.");
+        }
+
+        if ($this->emailExists()) {
+            throw new \Exception("Email is al geregistreerd.");
+        }
+
+        // Encrypt the password before saving
+        $options = ['cost' => 12];
+        $hash = password_hash($this->password, PASSWORD_DEFAULT, $options);
+
+        $conn = Db::getConnection();
+        $statement = $conn->prepare('INSERT INTO users (email, password) VALUES (:email, :password)');
+        $statement->bindValue(':email', $this->email);
+        $statement->bindValue(':password', $hash);
+
+        return $statement->execute();
+    }
+
     public function getBalance() {
         return $this->balance;
     }
@@ -129,10 +150,7 @@ class User {
         // Haal de gegevens van de gebruiker opnieuw op om het laatste saldo te verkrijgen
         $user = User::getUserById($this->id); // Haal de gebruiker op via ID
         $currentBalance = $user['balance'];  // Het huidige saldo van de gebruiker
-    
-        // Debugging: Weergeven van het huidige saldo en af te trekken bedrag
-        echo "Huidig saldo: " . number_format($currentBalance, 2) . "<br>";  
-        echo "Af te trekken bedrag: " . number_format($amount, 2) . "<br>";  
+     
     
         if ($currentBalance < $amount) {
             throw new \Exception("Onvoldoende saldo.");
@@ -140,9 +158,6 @@ class User {
     
         // Verminder het saldo
         $newBalance = $currentBalance - $amount;
-    
-        // Debugging: Weergeven van het nieuwe saldo
-        echo "Nieuw saldo na aftrekken: " . number_format($newBalance, 2) . "<br>";
     
         // Bijwerken van het saldo in de database
         $conn = Db::getConnection();
@@ -152,11 +167,7 @@ class User {
     
         // Voer de query uit en controleer of het is gelukt
         $executed = $statement->execute();
-        if ($executed) {
-            echo "Saldo succesvol bijgewerkt.<br>";
-        } else {
-            echo "Fout bij het bijwerken van saldo in de database.<br>";
-        }
+       
     }
     
     
@@ -176,5 +187,6 @@ class User {
         $statement->execute();
         return $statement->fetch(\PDO::FETCH_ASSOC);
     }
+
 }
 ?>

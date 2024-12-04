@@ -1,10 +1,11 @@
 <?php
 use Kocas\Git\Order;
 use Kocas\Git\Product;
-
+use Kocas\Git\User;
 
 include_once(__DIR__ . "/classes/Order.php");
 include_once(__DIR__ . "/classes/Product.php");
+include_once(__DIR__ . "/classes/User.php");
 
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
@@ -42,6 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Haal winkelwageninhoud op
 $cartItems = $order->getCartItems();
+
+// Haal de gebruiker op om de balans te krijgen
+$user = User::getUserById($userId); // Assuming you have a method to get the user by ID
+$balance = $user ? number_format($user['balance'], 2) : '0.00'; // Format the balance to two decimals
 ?>
 
 <!DOCTYPE html>
@@ -56,6 +61,11 @@ $cartItems = $order->getCartItems();
     <?php include_once("nav.php"); ?> 
 
     <h1>Winkelmandje</h1>
+
+    <!-- Display the user's balance -->
+    <div class="balance-info">
+        <p><strong>Je saldo: €<?php echo htmlspecialchars($balance); ?></strong></p>
+    </div>
 
     <?php if (!empty($message)): ?>
         <p class="success"><?php echo htmlspecialchars($message); ?></p>

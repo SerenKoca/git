@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace Kocas\Git;
 
 date_default_timezone_set('Europe/Amsterdam');
@@ -72,9 +70,7 @@ class Order {
 
     // Plaats een bestelling
     public function placeOrder() {
-        // Debugging: Toon de winkelwagen
-        var_dump($_SESSION['cart']);  // Dit moet de inhoud van de winkelwagen tonen
-    
+
         if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
             throw new \Exception("Je winkelwagen is leeg.");
         }
@@ -102,9 +98,6 @@ class Order {
             throw new \Exception("Gebruiker niet gevonden.");
         }
     
-        // Debugging: Huidig saldo van de gebruiker voor de betaling
-        echo "Huidig saldo van de gebruiker (voor betaling): " . number_format($user['balance'], 2) . "<br>";
-        echo "Totaalbedrag voor bestelling: " . number_format($totalCost, 2) . "<br>";
     
         // Controleer of de gebruiker voldoende saldo heeft
         if ($user['balance'] < $totalCost) {
@@ -116,21 +109,13 @@ class Order {
         $userObj->setId($user['id']);
         $userObj->deductBalance($totalCost);
     
-        // Debugging: Controleer het nieuwe saldo van de gebruiker
-        $updatedUser = User::getUserByEmail($_SESSION['email']);
-        echo "Nieuw saldo van de gebruiker: " . number_format($updatedUser['balance'], 2) . "<br>";
+       
     
         // Voeg bestelling toe aan de database
         foreach ($_SESSION['cart'] as $productId => $quantity) {
             $product = Product::getById($productId);
             if ($product) {
                 $totalPrice = $product['price'] * $quantity;
-    
-                // Debugging: Bekijk de waarden die we willen invoegen
-                echo "Probeer de bestelling in de database in te voegen.<br>";
-                echo "Product ID: " . $productId . "<br>";
-                echo "Quantity: " . $quantity . "<br>";
-                echo "Total price: " . number_format($totalPrice, 2) . "<br>";
     
                 try {
                     $statement = $conn->prepare("
@@ -141,13 +126,10 @@ class Order {
                     $statement->bindValue(':productId', $productId);
                     $statement->bindValue(':quantity', $quantity);
                     $statement->bindValue(':totalPrice', $totalPrice);
-    
-                    // Voer de query uit en controleer of het is gelukt
-                    if ($statement->execute()) {
-                        echo "Bestelling succesvol toegevoegd!<br>";
-                    } else {
-                        echo "SQL-fout: " . implode(", ", $statement->errorInfo()) . "<br>";
-                    }
+
+                    $statement->execute();
+                
+                    
                 } catch (\Exception $e) {
                     echo "Fout tijdens het toevoegen van de bestelling: " . $e->getMessage() . "<br>";
                 }
@@ -156,14 +138,20 @@ class Order {
     
         // Winkelwagen legen
         $this->clearCart();
-        var_dump($_SESSION['cart']);  // Dit zou een lege array moeten zijn
     
         return "Bestelling succesvol geplaatst.";
     }
     
     
     
-    
+    public function removeFromCart($productId) {
+        if (isset($_SESSION['cart'][$productId])) {
+            // Verwijder het product volledig uit de winkelwagen
+            unset($_SESSION['cart'][$productId]);
+        } else {
+            throw new \Exception("Product niet gevonden in winkelwagen.");
+        }
+    }
     
 
     // Winkelwagen legen

@@ -5,27 +5,25 @@ include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/User.php");
 include_once(__DIR__ . "/classes/Customer.php");
 
-use Kocas\Git\Customer;
+use Kocas\Git\User;
 
 $error1 = "";
 
 if (!empty($_POST)) {
     try {
         // Maak een nieuw Customer object aan
-        $customer = new Customer();
+        $customer = new User();
         $customer->setEmail($_POST['email']);
         $customer->setPassword($_POST['password']);
 
         // Probeer de klant op te slaan
         if ($customer->save()) {
             echo "Account succesvol aangemaakt!";
-            // Eventueel redirect naar loginpagina:
-            // header("Location: login.php");
-            // exit;
+            header("Location: login.php");
         } else {
             $error1 = "Er is een fout opgetreden bij het opslaan van de gebruiker.";
         }
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         $error1 = $e->getMessage();
     }
 }
