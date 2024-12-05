@@ -32,6 +32,7 @@ $orders = Order::getOrdersByUser($userId);
                 <tr>
                     <th>Product</th>
                     <th>Aantal</th>
+                    <th>Maat</th> <!-- Nieuwe kolom voor maat -->
                     <th>Totale Prijs</th>
                     <th>Datum</th>
                 </tr>
@@ -41,6 +42,7 @@ $orders = Order::getOrdersByUser($userId);
                     <tr>
                         <td><?php echo htmlspecialchars($order['title']); ?></td>
                         <td><?php echo htmlspecialchars($order['quantity']); ?></td>
+                        <td><?php echo htmlspecialchars($order['size'] ?? 'Geen maat'); ?></td> <!-- Weergave van de maat -->
                         <td>€<?php echo number_format($order['total_price'], 2); ?></td>
                         <td><?php echo htmlspecialchars($order['order_date']); ?></td>
                     </tr>

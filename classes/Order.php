@@ -38,17 +38,25 @@ class Order {
     }
 
     // Voeg product toe aan winkelwagen
-    public function addToCart($productId, $quantity) {
+    public function addToCart($productId, $quantity, $size = null) {
         if (!isset($_SESSION['cart'])) {
             $_SESSION['cart'] = [];
         }
-    
-        // Reset de hoeveelheid als deze niet een integer is
-        if (!isset($_SESSION['cart'][$productId]) || !is_int($_SESSION['cart'][$productId])) {
-            $_SESSION['cart'][$productId] = 0;
+
+        // Maak een unieke sleutel op basis van zowel het productID als de maat (indien aanwezig)
+        $cartKey = $productId . ($size ? "_$size" : "");
+
+        // Als het product al in de winkelwagen zit, werk de hoeveelheid bij
+        if (isset($_SESSION['cart'][$cartKey])) {
+            $_SESSION['cart'][$cartKey]['quantity'] += (int)$quantity;
+        } else {
+            // Voeg het product toe met de maat (null als geen maat)
+            $_SESSION['cart'][$cartKey] = [
+                'product_id' => $productId,
+                'quantity' => (int)$quantity,
+                'size' => $size  // Sla de maat op (null als geen maat)
+            ];
         }
-    
-        $_SESSION['cart'][$productId] += (int)$quantity;
     }
     
     // Toon de producten in de winkelwagen
@@ -56,22 +64,44 @@ class Order {
         if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
             return [];
         }
-
+    
         $cartItems = [];
-        foreach ($_SESSION['cart'] as $productId => $quantity) {
+        foreach ($_SESSION['cart'] as $productKey => $item) {
+            // De sleutel is nu productId + size, dus split het op
+            $productDetails = explode("_", $productKey);
+            $productId = $productDetails[0];
+            $size = isset($productDetails[1]) ? $productDetails[1] : null;
+            
             $product = Product::getById($productId);  // Haal productgegevens op
+            
             if ($product) {
-                $product['quantity'] = $quantity;
-                $product['total_price'] = $product['price'] * $quantity;
-                $cartItems[] = $product;
+                // Controleer of prijs een numerieke waarde is
+                if (isset($product['price']) && is_numeric($product['price'])) {
+                    // Gebruik de opgeslagen hoeveelheid
+                    $quantity = $item['quantity'];
+    
+                    // Bereken de totaalprijs
+                    $product['quantity'] = $quantity;
+                    $product['total_price'] = $product['price'] * $quantity;
+    
+                    // Voeg de maat toe aan de productinformatie (indien aanwezig)
+                    $product['size'] = $size;
+    
+                    // Voeg het product toe aan de lijst
+                    $cartItems[] = $product;
+                } else {
+                    // Foutafhandelingscode als de prijs niet geldig is
+                    // Dit zou in productie-omgevingen kunnen worden gelogd voor debugging
+                    continue;
+                }
             }
         }
         return $cartItems;
     }
+    
 
     // Plaats een bestelling
     public function placeOrder() {
-
         if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
             throw new \Exception("Je winkelwagen is leeg.");
         }
@@ -84,10 +114,14 @@ class Order {
         $totalCost = 0;
     
         // Bereken het totaalbedrag van de bestelling
-        foreach ($_SESSION['cart'] as $productId => $quantity) {
+        foreach ($_SESSION['cart'] as $productKey => $item) {
+            $productDetails = explode("_", $productKey);
+            $productId = $productDetails[0];
+            $size = isset($productDetails[1]) ? $productDetails[1] : null;
+    
             $product = Product::getById($productId);
             if ($product) {
-                $totalCost += $product['price'] * $quantity;
+                $totalCost += $product['price'] * $item['quantity'];
             } else {
                 echo "Product met ID $productId niet gevonden.<br>";
             }
@@ -99,10 +133,9 @@ class Order {
             throw new \Exception("Gebruiker niet gevonden.");
         }
     
-    
         // Controleer of de gebruiker voldoende saldo heeft
         if ($user['balance'] < $totalCost) {
-            throw new Exception("Onvoldoende saldo om de bestelling te plaatsen.");
+            throw new \Exception("Onvoldoende saldo om de bestelling te plaatsen.");
         }
     
         // Trek het saldo van de gebruiker af
@@ -110,27 +143,27 @@ class Order {
         $userObj->setId($user['id']);
         $userObj->deductBalance($totalCost);
     
-       
-    
         // Voeg bestelling toe aan de database
-        foreach ($_SESSION['cart'] as $productId => $quantity) {
+        foreach ($_SESSION['cart'] as $productKey => $item) {
+            $productDetails = explode("_", $productKey);
+            $productId = $productDetails[0];
+            $size = isset($productDetails[1]) ? $productDetails[1] : null;
+    
             $product = Product::getById($productId);
             if ($product) {
-                $totalPrice = $product['price'] * $quantity;
+                $totalPrice = $product['price'] * $item['quantity'];
     
                 try {
                     $statement = $conn->prepare("
-                        INSERT INTO orders (user_id, product_id, quantity, total_price, order_date)
-                        VALUES (:userId, :productId, :quantity, :totalPrice, NOW())
+                        INSERT INTO orders (user_id, product_id, quantity, total_price, order_date, size)
+                        VALUES (:userId, :productId, :quantity, :totalPrice, NOW(), :size)
                     ");
                     $statement->bindValue(':userId', $user['id']);
                     $statement->bindValue(':productId', $productId);
-                    $statement->bindValue(':quantity', $quantity);
+                    $statement->bindValue(':quantity', $item['quantity']);
                     $statement->bindValue(':totalPrice', $totalPrice);
-
+                    $statement->bindValue(':size', $size);
                     $statement->execute();
-                
-                    
                 } catch (\Exception $e) {
                     echo "Fout tijdens het toevoegen van de bestelling: " . $e->getMessage() . "<br>";
                 }
@@ -142,6 +175,7 @@ class Order {
     
         return "Bestelling succesvol geplaatst.";
     }
+    
     
     
     

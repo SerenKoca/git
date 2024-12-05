@@ -24,7 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['add_to_cart'])) {
             $productId = (int)$_POST['product_id'];
             $quantity = (int)$_POST['quantity'];
-            $order->addToCart($productId, $quantity);
+            $size = isset($_POST['size']) ? $_POST['size'] : null; 
+            $order->addToCart($productId, $quantity, $size);
             $message = "Product succesvol toegevoegd aan winkelwagen.";
         } elseif (isset($_POST['remove'])) {
             $productId = (int)$_POST['product_id'];
@@ -82,6 +83,7 @@ $balance = $user ? number_format($user['balance'], 2) : '0.00'; // Format the ba
                     <th>Product</th>
                     <th>Prijs</th>
                     <th>Aantal</th>
+                    <th>Maat</th>
                     <th>Totaal</th>
                     <th>Acties</th>
                 </tr>
@@ -92,6 +94,7 @@ $balance = $user ? number_format($user['balance'], 2) : '0.00'; // Format the ba
                         <td><?php echo htmlspecialchars($item['title']); ?></td>
                         <td>€<?php echo number_format($item['price'], 2); ?></td>
                         <td><?php echo htmlspecialchars($item['quantity']); ?></td>
+                        <td><?php echo htmlspecialchars($item['size'] ?? 'Geen maat'); ?></td> <!-- Maat weergeven -->
                         <td>€<?php echo number_format($item['total_price'], 2); ?></td>
                         <td>
                             <form method="post">

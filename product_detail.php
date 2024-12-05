@@ -81,10 +81,28 @@ if (isset($_GET['id'])) {
             </div>
 
             <form method="post" action="winkelmandje.php">
-                <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                <input type="number" name="quantity" value="1" min="1">
-                <button type="submit" name="add_to_cart">Toevoegen aan winkelwagen</button>
-            </form>
+    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+
+    <!-- Maat selecteren (optioneel) -->
+    <?php if ($product['requires_size'] == '1'): ?>
+        <label for="size">Kies een maat (optioneel):</label>
+        <select name="size" id="size">
+            <option value="">Geen maat</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <!-- Voeg hier meer maten toe indien nodig -->
+        </select>
+    <?php else: ?>
+        <input type="hidden" name="size" value="Geen maat">
+    <?php endif; ?>
+
+    <!-- Hoeveelheid -->
+    <input type="number" name="quantity" value="1" min="1" required>
+    <button type="submit" name="add_to_cart">Toevoegen aan winkelwagen</button>
+</form>
+
+            <br>
                 
             <!-- Debugging comments -->
             <div class="post__comments">
