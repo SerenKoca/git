@@ -39,7 +39,7 @@ class Comment {
 
     public function save() {
         try {
-            $conn = new \PDO('mysql:host=localhost;dbname=webshop', 'root', ''); // Gebruik de volledig gekwalificeerde \PDO
+            $conn = Db::getConnection();
             $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
             $statement = $conn->prepare(
@@ -49,27 +49,36 @@ class Comment {
             $statement->bindValue(":productId", $this->getProductId());
             $statement->bindValue(":userId", $this->getUserId());
 
-            return $statement->execute();
-        } catch (\PDOException $e) { // Gebruik de volledig gekwalificeerde \PDOException
+            if ($statement->execute()) {
+                error_log("Comment succesvol opgeslagen: " . $this->getText());
+                return true;
+            } else {
+                error_log("Comment opslaan mislukt.");
+                return false;
+            }
+        } catch (\PDOException $e) {
+            error_log("Database error bij opslaan: " . $e->getMessage());
             die("Database error: " . $e->getMessage());
         }
     }
 
     public static function getAll($productId) {
-        try {
-            $conn = new \PDO('mysql:host=localhost;dbname=webshop', 'root', ''); // Gebruik de volledig gekwalificeerde \PDO
-            $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+    try {
+        $conn = Db::getConnection();
+        $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-            $statement = $conn->prepare('SELECT * FROM comments WHERE productId = :productId');
-            $statement->bindValue(":productId", $productId);
-            $statement->execute();
+        // Query om alleen reacties op te halen voor het specifieke productId
+        $statement = $conn->prepare('SELECT * FROM comments WHERE productId = :productId ORDER BY created_at DESC');
+        $statement->bindValue(":productId", $productId, \PDO::PARAM_INT);
+        $statement->execute();
 
-            return $statement->fetchAll(\PDO::FETCH_ASSOC); // Gebruik de volledig gekwalificeerde \PDO::FETCH_ASSOC
-        } catch (\PDOException $e) { // Gebruik de volledig gekwalificeerde \PDOException
-            die("Database error: " . $e->getMessage());
-        }
+        $results = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        error_log("Aantal opgehaalde reacties voor productId $productId: " . count($results));
+        return $results;
+    } catch (\PDOException $e) {
+        error_log("Database error bij ophalen van reacties: " . $e->getMessage());
+        die("Database error: " . $e->getMessage());
     }
-
-    
+}
 
 }

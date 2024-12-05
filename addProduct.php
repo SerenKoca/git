@@ -26,6 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ->setPrice($_POST['price'])
                 ->setCategoryId($_POST['category'])
                 ->setDescription($_POST['description']);
+                
 
         // Afbeelding uploaden
         $product->uploadImage($_FILES['image']);

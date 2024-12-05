@@ -42,14 +42,15 @@ class Order {
         if (!isset($_SESSION['cart'])) {
             $_SESSION['cart'] = [];
         }
-
-        if (isset($_SESSION['cart'][$productId])) {
-            $_SESSION['cart'][$productId] += $quantity;
-        } else {
-            $_SESSION['cart'][$productId] = $quantity;
+    
+        // Reset de hoeveelheid als deze niet een integer is
+        if (!isset($_SESSION['cart'][$productId]) || !is_int($_SESSION['cart'][$productId])) {
+            $_SESSION['cart'][$productId] = 0;
         }
+    
+        $_SESSION['cart'][$productId] += (int)$quantity;
     }
-
+    
     // Toon de producten in de winkelwagen
     public function getCartItems() {
         if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
@@ -157,6 +158,28 @@ class Order {
     // Winkelwagen legen
     public function clearCart() {
         $_SESSION['cart'] = [];
+    }
+
+    public static function hasUserPurchasedProduct($userId, $productId) {
+        $conn = Db::getConnection();  // Get database connection
+        if (!$conn) {
+            throw new \Exception("Database connection failed.");
+        }
+
+        // Prepare the query to check if the user has purchased the specific product
+        $statement = $conn->prepare("
+            SELECT COUNT(*) 
+            FROM orders 
+            WHERE user_id = :userId 
+            AND product_id = :productId
+        ");
+        $statement->bindValue(':userId', $userId, \PDO::PARAM_INT);
+        $statement->bindValue(':productId', $productId, \PDO::PARAM_INT);
+        
+        $statement->execute();
+        $count = $statement->fetchColumn();  // Fetch the count of orders
+
+        return $count > 0;  // If count is greater than 0, the user has purchased the product
     }
 }
 ?>

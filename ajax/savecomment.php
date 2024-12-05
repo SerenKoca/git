@@ -1,36 +1,44 @@
 <?php
-   
 namespace Kocas\Git;
-    include_once(__DIR__ . '/../classes/Comment.php');
-    use Kocas\Git\Comment;
-    session_start();
-    
-    if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-        header("Location: login.php");
-        exit;
-    }
 
-    
+include_once(__DIR__ . '/../classes/Comment.php');
+use Kocas\Git\Comment;
 
-    if(!empty($_POST)){
-        //new comment
+session_start();
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    error_log("Gebruiker is niet ingelogd.");
+    echo json_encode(['status' => 'error', 'message' => 'U bent niet ingelogd.']);
+    exit;
+}
+
+if (!empty($_POST)) {
+    try {
         $c = new Comment();
-        
-      
         $c->setProductId($_POST['productId']);
         $c->setText($_POST['text']);
-        $c->setUserId(22); //$_SESSION
+        $c->setUserId($_SESSION['user_id']); // Zorg ervoor dat $_SESSION['user_id'] is ingesteld
 
-        // save()
-        $c->save();
-
-        //succes toegevoegd
+        if ($c->save()) {
+            $response = [
+                'status' => 'success',
+                'body' => htmlspecialchars($c->getText()),
+                'message' => 'Comment saved'
+            ];
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Comment kon niet worden opgeslagen.'
+            ];
+        }
+    } catch (\Exception $e) {
+        error_log("Fout bij het opslaan van comment: " . $e->getMessage());
         $response = [
-            'status' => 'success',
-            'body' => htmlspecialchars($c->getText()),
-            'message' => 'Comment saved'
+            'status' => 'error',
+            'message' => 'Er is een fout opgetreden: ' . $e->getMessage()
         ];
-
-        header('Content-Type: application/json');
-        echo json_encode($response); //{"status":"success","body":"<script>alert('xss')</script>","message":"Comment saved"}
     }
+
+    header('Content-Type: application/json');
+    echo json_encode($response);
+}

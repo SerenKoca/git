@@ -1,9 +1,13 @@
 <?php
 use Kocas\Git\Product;
 use Kocas\Git\Db;
+use Kocas\Git\Comment;
+use Kocas\Git\Order;
 
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");
+include_once(__DIR__ . "/classes/Comment.php");
+include_once(__DIR__ . "/classes/Order.php");
 
 session_start();
 
@@ -13,18 +17,33 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
+// Haal de gebruikers ID uit de sessie (zorg ervoor dat dit beschikbaar is)
+$userId = $_SESSION['user_id']; // Stel dat de gebruiker ID is opgeslagen in de sessie
+
 // Haal het product ID uit de URL
 if (isset($_GET['id'])) {
     $productId = (int)$_GET['id'];
+    error_log("Product ID ontvangen: $productId");
+
+    // Controleer of de gebruiker het product heeft gekocht
+    $userCanComment = false; // Standaard: gebruiker mag geen comment plaatsen
+    if (Order::hasUserPurchasedProduct($userId, $productId)) {
+        $userCanComment = true; // Gebruiker heeft het product gekocht, dus mag commenten
+    }
 
     // Haal het product op via de Product klasse
     $product = Product::getById($productId);
-
     if (!$product) {
+        error_log("Product niet gevonden voor ID: $productId");
         echo "Product niet gevonden.";
         exit;
     }
+
+    // Haal alle reacties op
+    $allComments = Comment::getAll($productId);
+    error_log("Aantal reacties gevonden voor product $productId: " . count($allComments));
 } else {
+    error_log("Geen product ID opgegeven in URL.");
     echo "Geen product ID opgegeven.";
     exit;
 }
@@ -66,10 +85,30 @@ if (isset($_GET['id'])) {
                 <input type="number" name="quantity" value="1" min="1">
                 <button type="submit" name="add_to_cart">Toevoegen aan winkelwagen</button>
             </form>
+                
+            <!-- Debugging comments -->
+            <div class="post__comments">
+                <?php if ($userCanComment): ?>
+                    <div class="post__comments__form">
+                        <input type="text" id="commentText" placeholder="What's on your mind">
+                        <a href="#" class="btn" id="btnAddComment" data-postid="<?php echo $productId; ?>">Voeg commentaar toe</a>
+                    </div>  
+
+                    <ul class="post__comments__list">
+                        <?php foreach ($allComments as $comment): ?>
+                            <li><?php echo htmlspecialchars($comment['text'], ENT_QUOTES, 'UTF-8'); ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php else: ?>
+                    <p>Je moet dit product eerst kopen voordat je een reactie kunt plaatsen.</p>
+                <?php endif; ?>
+            </div>
 
             <a href="products_admin.php" class="back-button">Terug naar producten</a>
         </div>
     </div>
+
+    <script src="app.js"></script>
 
     <footer>
         <?php include_once("footer.php"); ?> 
