@@ -1,6 +1,7 @@
 <?php 
 
 include_once(__DIR__ . '/classes/Product.php');
+require_once __DIR__ . '/bootstrap.php';
 
 
 use Kocas\Git\Product;
