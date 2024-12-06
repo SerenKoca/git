@@ -2,6 +2,7 @@
 use Kocas\Git\Order;
 
 include_once(__DIR__ . "/classes/Order.php");
+require_once __DIR__ . '/bootstrap.php';
 
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {

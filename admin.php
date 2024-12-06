@@ -1,5 +1,7 @@
 <?php
 use Kocas\Git\User;
+
+require_once __DIR__ . '/bootstrap.php';
 session_start();
 
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
