@@ -73,7 +73,7 @@ class Product {
     // Methode voor het uploaden van een afbeelding
     public function uploadImage($file) {
         // Cloudinary configuratie inladen
-        $configFilePath = __DIR__ . '/../config/cloudinary.php'; // pad naar je cloudinary.php bestand
+        $configFilePath = __DIR__ . '/../vendor/cloudinary/cloudinary/src/Cloudinary.php'; // pad naar je cloudinary.php bestand
 
         if (file_exists($configFilePath)) {
             $config = include($configFilePath);
