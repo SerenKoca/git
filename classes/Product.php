@@ -2,6 +2,9 @@
 
 namespace Kocas\Git;
 
+use Cloudinary\Cloudinary; // Voeg deze regel toe om de Cloudinary-klasse te gebruiken
+use Kocas\Git\Db;
+
 class Product {
     private $title;
     private $price;

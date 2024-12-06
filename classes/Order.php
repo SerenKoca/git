@@ -2,7 +2,7 @@
 
 namespace Kocas\Git;
 
-
+use Kocas\Git\Db;
 
 class Order {
     private $userId;

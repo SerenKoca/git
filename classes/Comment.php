@@ -2,6 +2,7 @@
 namespace Kocas\Git;
 
 
+use Kocas\Git\Db;
 
 class Comment {
     private $text;
