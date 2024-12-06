@@ -1,8 +1,6 @@
 <?php
 namespace Kocas\Git;
 
-use Kocas\Git\Db;
-
 class User {
     private $id;
     private $email;
