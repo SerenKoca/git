@@ -3,6 +3,7 @@
 namespace Kocas\Git;
 
 include_once(__DIR__ . '/Db.php');
+require_once __DIR__ . '/vendor/autoload.php';
 
 use Kocas\Git\Db;
 
@@ -73,38 +74,35 @@ class Product {
 
     // Methode voor het uploaden van een afbeelding
     public function uploadImage($file) {
-        $uploadDir = 'uploads/';
-        
-        // Controleer of de directory bestaat en maak deze anders aan
-        if (!is_dir($uploadDir)) {
-            if (!mkdir($uploadDir, 0755, true)) {
-                throw new \Exception("Failed to create uploads directory");
-            }
-        }
-
-        // Controleer of er uploadfouten zijn
+        // Load Cloudinary credentials
+        $config = include(__DIR__ . '/../config/cloudinary.php');
+    
+        // Initialize Cloudinary
+        $cloudinary = new Cloudinary([
+            'cloud' => [
+                'cloud_name' => $config['webshop'],
+                'api_key'    => $config['228424447245619'],
+                'api_secret' => $config['-O4FBdpNc92q7bEQBZsq_N_lnWE'],
+            ]
+        ]);
+    
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            throw new \Exception("File upload error: " . $file['error']);
+            throw new Exception("File upload error: " . $file['error']);
         }
-
-        $uploadFile = $uploadDir . basename($file['name']);
-        $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
-        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-
-        // Controleer bestandstype
-        if (!in_array($imageFileType, $allowedTypes)) {
-            throw new \Exception("Only JPG, JPEG, PNG & GIF files are allowed.");
+    
+        try {
+            // Upload file to Cloudinary
+            $result = $cloudinary->uploadApi()->upload($file['tmp_name'], [
+                'folder' => 'webshop_images', // Optional: Organize files in a folder
+            ]);
+    
+            // Store the URL of the uploaded image
+            $this->setImage($result['secure_url']);
+            return true;
+        } catch (Exception $e) {
+            throw new Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
         }
-
-        // Probeer bestand te verplaatsen
-        if (!move_uploaded_file($file['tmp_name'], $uploadFile)) {
-            throw new \Exception("Failed to upload image. Check permissions for the uploads directory.");
-        }
-
-        $this->setImage($uploadFile);
-        return true;
     }
-
     // Methode om alle producten op te halen
     public static function getAll() {
         $conn = Db::getConnection();

@@ -11,5 +11,7 @@
             "email": "r0937023@student.thomasmore.be"
         }
     ],
-    "require": {}
+    "require": {
+        "cloudinary/cloudinary_php": "^2.14"
+    }
 }
