@@ -5,6 +5,7 @@ namespace Kocas\Git;
 use Cloudinary\Cloudinary; // Voeg deze regel toe om de Cloudinary-klasse te gebruiken
 use Kocas\Git\Db;
 
+
 class Product {
     private $title;
     private $price;
@@ -72,24 +73,19 @@ class Product {
 
     // Methode voor het uploaden van een afbeelding
     public function uploadImage($file) {
-        // Cloudinary configuratie inladen
-        $configFilePath = __DIR__ . '/../vendor/cloudinary/cloudinary/src/Cloudinary.php'; // pad naar je cloudinary.php bestand
-
-        if (file_exists($configFilePath)) {
-            $config = include($configFilePath);
-        } else {
-            throw new \Exception("Cloudinary configuration file not found.");
-        }
-
-        // Initializeer Cloudinary
-        $cloudinary = new Cloudinary([
+        // Cloudinary configuratie zonder .env
+        $cloudinaryConfig = [
             'cloud' => [
-                'cloud_name' => $config['dxbez7ob0'],
-                'api_key'    => $config['228424447245619'],
-                'api_secret' => $config['-O4FBdpNc92q7bEQBZsq_N_lnWE'],
+                'cloud_name' => 'dxbez7ob0',   // Vul hier je Cloudinary Cloud Name in
+                'api_key'    => '228424447245619',      // Vul hier je Cloudinary API Key in
+                'api_secret' => '-O4FBdpNc92q7bEQBZsq_N_lnWE',   // Vul hier je Cloudinary API Secret in
             ]
-        ]);
+        ];
 
+        // Initializeer Cloudinary met de configuratie
+        $cloudinary = new Cloudinary($cloudinaryConfig);
+
+        // Controleer of er een fout is bij het uploaden van het bestand
         if ($file['error'] !== UPLOAD_ERR_OK) {
             throw new Exception("File upload error: " . $file['error']);
         }
@@ -107,6 +103,7 @@ class Product {
             throw new Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
         }
     }
+
 
     // Methode om alle producten op te halen
     public static function getAll() {
