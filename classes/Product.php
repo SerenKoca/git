@@ -2,8 +2,6 @@
 
 namespace Kocas\Git;
 
-
-
 class Product {
     private $title;
     private $price;

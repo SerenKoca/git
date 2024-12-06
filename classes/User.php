@@ -1,11 +1,7 @@
 <?php
 namespace Kocas\Git;
 
-include_once(__DIR__ . '/Db.php');
-include_once(__DIR__ . '/Order.php');
 
-use Kocas\Git\Db;
-use Kocas\Git\Order;
 
 class User {
     private $id;

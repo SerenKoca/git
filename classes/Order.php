@@ -2,15 +2,7 @@
 
 namespace Kocas\Git;
 
-date_default_timezone_set('Europe/Amsterdam');
 
-include_once(__DIR__ . '/Db.php');
-include_once(__DIR__ . '/User.php');
-include_once(__DIR__ . '/Product.php');  // Zorg ervoor dat je de Product class hebt geïmporteerd
-
-use Kocas\Git\Db;
-use Kocas\Git\User;
-use Kocas\Git\Product;
 
 class Order {
     private $userId;
