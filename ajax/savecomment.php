@@ -2,6 +2,7 @@
 namespace Kocas\Git;
 
 include_once(__DIR__ . '/../classes/Comment.php');
+require_once __DIR__ . '/../bootstrap.php';
 use Kocas\Git\Comment;
 
 session_start();
