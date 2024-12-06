@@ -84,9 +84,9 @@ class Product {
         // Initializeer Cloudinary
         $cloudinary = new Cloudinary([
             'cloud' => [
-                'cloud_name' => $config['webshop'],
-                'api_key'    => $config['api_key'],
-                'api_secret' => $config['api_secret'],
+                'cloud_name' => $config['dxbez7ob0'],
+                'api_key'    => $config['228424447245619'],
+                'api_secret' => $config['-O4FBdpNc92q7bEQBZsq_N_lnWE'],
             ]
         ]);
 
