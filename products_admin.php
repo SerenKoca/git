@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_product_id']))
     <h1>Producten</h1>
 
     <?php if (empty($products)): ?>
-        <p class="no-products">Geen producten gevonden voor "<?= htmlspecialchars($searchTerm) ?>" in deze categorie. <i class="fa-solid fa-face-frown"></i></p>
+        <p class="no-products">Geen producten gevonden in deze categorie. <i class="fa-solid fa-face-frown"></i></p>
     <?php else: ?>
         <div class="product-grid">
             <?php foreach ($products as $product): ?>
