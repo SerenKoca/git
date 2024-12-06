@@ -4,6 +4,7 @@ use Kocas\Git\Db;
 
 include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");
+require_once __DIR__ . '/bootstrap.php';
 
 session_start();
 

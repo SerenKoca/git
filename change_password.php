@@ -2,7 +2,8 @@
 
 use Kocas\Git\User;
 
-include_once(__DIR__ . "/classes/User.php");
+
+require_once __DIR__ . '/bootstrap.php';
 
 session_start(); // Start de sessie
 
