@@ -16,7 +16,7 @@ class Product {
     // Setter voor titel
     public function setTitle($title) {
         if (empty($title)) {
-            throw new Exception("Title cannot be empty");
+            throw new \Exception("Title cannot be empty");
         }
         $this->title = htmlspecialchars($title);
         return $this;
@@ -56,7 +56,7 @@ class Product {
     }
 
     // Methode om product toe te voegen aan de database
-    public function addProduct() {
+       public function addProduct() {
         $conn = Db::getConnection();
         $statement = $conn->prepare("
             INSERT INTO products (title, price, category_id, image, description) 
@@ -70,31 +70,39 @@ class Product {
         return $statement->execute();
     }
 
+
     // Methode voor het uploaden van een afbeelding
     public function uploadImage($file) {
         $uploadDir = 'uploads/';
+        
+        // Controleer of de directory bestaat en maak deze anders aan
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+            if (!mkdir($uploadDir, 0755, true)) {
+                throw new \Exception("Failed to create uploads directory");
+            }
         }
 
-        if ($file['error'] === UPLOAD_ERR_OK) {
-            $uploadFile = $uploadDir . basename($file['name']);
-            $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
-            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-
-            if (!in_array($imageFileType, $allowedTypes)) {
-                throw new Exception("Only JPG, JPEG, PNG & GIF files are allowed.");
-            }
-
-            if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
-                $this->setImage($uploadFile);
-                return true;
-            } else {
-                throw new Exception("Failed to upload image.");
-            }
-        } else {
-            throw new Exception("Image must be uploaded.");
+        // Controleer of er uploadfouten zijn
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            throw new \Exception("File upload error: " . $file['error']);
         }
+
+        $uploadFile = $uploadDir . basename($file['name']);
+        $imageFileType = strtolower(pathinfo($uploadFile, PATHINFO_EXTENSION));
+        $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+
+        // Controleer bestandstype
+        if (!in_array($imageFileType, $allowedTypes)) {
+            throw new \Exception("Only JPG, JPEG, PNG & GIF files are allowed.");
+        }
+
+        // Probeer bestand te verplaatsen
+        if (!move_uploaded_file($file['tmp_name'], $uploadFile)) {
+            throw new \Exception("Failed to upload image. Check permissions for the uploads directory.");
+        }
+
+        $this->setImage($uploadFile);
+        return true;
     }
 
     // Methode om alle producten op te halen
