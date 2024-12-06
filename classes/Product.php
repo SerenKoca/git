@@ -3,7 +3,6 @@
 namespace Kocas\Git;
 
 include_once(__DIR__ . '/Db.php');
-require_once __DIR__ . '/vendor/autoload.php';
 
 use Kocas\Git\Db;
 
