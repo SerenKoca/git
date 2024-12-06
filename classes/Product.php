@@ -3,7 +3,8 @@
 namespace Kocas\Git;
 
 include_once(__DIR__ . '/Db.php');
-
+include_once(__DIR__ . '/../vendor/autoload.php'); // Voeg deze regel toe voor Composer autoload (indien gebruikt)
+use Cloudinary\Cloudinary; // Voeg deze regel toe om de Cloudinary-klasse te gebruiken
 use Kocas\Git\Db;
 
 class Product {
@@ -73,35 +74,42 @@ class Product {
 
     // Methode voor het uploaden van een afbeelding
     public function uploadImage($file) {
-        // Load Cloudinary credentials
-        $config = include(__DIR__ . '/../config/cloudinary.php');
-    
-        // Initialize Cloudinary
+        // Cloudinary configuratie inladen
+        $configFilePath = __DIR__ . '/../config/cloudinary.php'; // pad naar je cloudinary.php bestand
+
+        if (file_exists($configFilePath)) {
+            $config = include($configFilePath);
+        } else {
+            throw new Exception("Cloudinary configuration file not found.");
+        }
+
+        // Initializeer Cloudinary
         $cloudinary = new Cloudinary([
             'cloud' => [
                 'cloud_name' => $config['webshop'],
-                'api_key'    => $config['228424447245619'],
-                'api_secret' => $config['-O4FBdpNc92q7bEQBZsq_N_lnWE'],
+                'api_key'    => $config['api_key'],
+                'api_secret' => $config['api_secret'],
             ]
         ]);
-    
+
         if ($file['error'] !== UPLOAD_ERR_OK) {
             throw new Exception("File upload error: " . $file['error']);
         }
-    
+
         try {
-            // Upload file to Cloudinary
+            // Upload bestand naar Cloudinary
             $result = $cloudinary->uploadApi()->upload($file['tmp_name'], [
-                'folder' => 'webshop_images', // Optional: Organize files in a folder
+                'folder' => 'webshop_images', // Optioneel: Organiseer bestanden in een map
             ]);
-    
-            // Store the URL of the uploaded image
+
+            // Sla de URL van de geüploade afbeelding op
             $this->setImage($result['secure_url']);
             return true;
         } catch (Exception $e) {
             throw new Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
         }
     }
+    
     // Methode om alle producten op te halen
     public static function getAll() {
         $conn = Db::getConnection();
