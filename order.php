@@ -22,6 +22,7 @@ $orders = Order::getOrdersByUser($userId);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mijn Bestellingen</title>
     <link rel="stylesheet" href="webshop.css">
+    <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
 </head>
 <body>
     <?php include_once("nav.php"); ?> 

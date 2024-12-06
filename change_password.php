@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Wachtwoord Wijzigen</title>
     <link rel="stylesheet" href="webshop.css"> <!-- Gebruik dezelfde CSS-bestand -->
     <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
+    <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
     <?php include_once("nav.php"); ?>   
 </head>
 <body>

@@ -24,6 +24,7 @@ $categories = Category::getAllCategories();
     <link rel="stylesheet" href="webshop.css">
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
 </head>
 <body>
 

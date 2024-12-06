@@ -39,6 +39,7 @@ if (isset($_GET['id'])) {
     <title><?php echo htmlspecialchars($product['title']); ?></title>
     <link rel="stylesheet" href="webshop.css">
     <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
+    <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
 </head>
 <body>
     <?php include_once("nav.php"); ?> 
