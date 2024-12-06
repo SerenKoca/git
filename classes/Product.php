@@ -2,7 +2,11 @@
 
 namespace Kocas\Git;
 
+include_once(__DIR__ . '/Db.php');
+include_once(__DIR__ . '/../vendor/autoload.php'); // Voeg deze regel toe voor Composer autoload (indien gebruikt)
 
+use Cloudinary\Cloudinary; // Voeg deze regel toe om de Cloudinary-klasse te gebruiken
+use Kocas\Git\Db;
 
 class Product {
     private $title;
