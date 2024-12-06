@@ -80,7 +80,7 @@ class Product {
         if (file_exists($configFilePath)) {
             $config = include($configFilePath);
         } else {
-            throw new Exception("Cloudinary configuration file not found.");
+            throw new \Exception("Cloudinary configuration file not found.");
         }
 
         // Initializeer Cloudinary
@@ -109,7 +109,7 @@ class Product {
             throw new Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
         }
     }
-    
+
     // Methode om alle producten op te halen
     public static function getAll() {
         $conn = Db::getConnection();
