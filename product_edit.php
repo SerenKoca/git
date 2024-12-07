@@ -20,14 +20,11 @@ if (!isset($_GET['id'])) {
 $productId = $_GET['id'];
 $product = Product::getById($productId);
 
-// Controleer of het product bestaat
 if ($product === null) {
-    echo "Product niet gevonden!";
+    // If no product is found, show an error or redirect
+    echo "Product not found!";
     exit;
 }
-
-// Verkrijg de afbeelding uit de array
-$imageUrl = isset($product['image']) ? $product['image'] : ''; // Controleer of de afbeelding bestaat
 
 // Haal de categorieën op uit de database
 $categories = Product::getCategories(); // Haal alle categorieën uit de database
@@ -45,15 +42,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             // Hier wordt de afbeelding geüpload naar Cloudinary
             $product->uploadImage($image); // Gebruik de uploadImage methode om de afbeelding naar Cloudinary te sturen
-            $imageUrl = $product->getImage(); // Verkrijg de URL van de geüploade afbeelding
         } catch (\Exception $e) {
             // Afbeelding uploaden mislukt, foutmelding
             $error = $e->getMessage();
         }
     }
 
+
     // Werk het product bij in de database
-    Product::update($productId, $title, $category, $price, $imageUrl, $description);
+    Product::update($productId, $title, $category, $price, $product->getImage(), $description);
 
     // Redirect naar de productlijst na het bijwerken
     header("Location: products_admin.php");
@@ -80,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <h1>Wijzig Product</h1>
 
-<form action="product_edit.php?id=<?php echo $product['id']; ?>" method="POST" enctype="multipart/form-data">
+<form action="product_edit.php?id=<?php echo $product['id']; ?>" method="POST">
     <label for="title">Product Titel:</label>
     <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($product['title']); ?>" required>
 
@@ -96,12 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <label for="price">Prijs (€):</label>
     <input type="number" name="price" id="price" value="<?php echo htmlspecialchars($product['price']); ?>" required step="0.01">
-
-    <!-- Weergeef de huidige afbeelding als deze bestaat -->
-    <?php if ($imageUrl): ?>
-        <p>Huidige afbeelding:</p>
-        <img src="<?php echo htmlspecialchars($imageUrl); ?>" alt="Product Image" width="150">
-    <?php endif; ?>
 
     <label for="image">Afbeelding (Kies een bestand):</label>
     <input type="file" name="image" id="image">
