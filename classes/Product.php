@@ -73,29 +73,41 @@ class Product {
 
     // Methode voor het uploaden van een afbeelding
     public function uploadImage($file) {
-        // Cloudinary configuratie zonder .env
+        // Laad het JSON-configuratiebestand
+        $configJson = file_get_contents(__DIR__ . '/config.json'); // Zorg ervoor dat het pad naar je JSON bestand klopt
+        if (!$configJson) {
+            throw new Exception("Kon het configuratiebestand niet laden.");
+        }
+    
+        // Decodeer de JSON naar een PHP array
+        $config = json_decode($configJson, true);
+        if (!$config || !isset($config['cloudinary'])) {
+            throw new Exception("Ongeldige configuratie in het JSON-bestand.");
+        }
+    
+        // Haal de Cloudinary configuratie uit het JSON-bestand
         $cloudinaryConfig = [
             'cloud' => [
-                'cloud_name' => getenv('CLOUDINARY_CLOUD_NAME'),
-                'api_key'    => getenv('CLOUDINARY_API_KEY'),
-                'api_secret' => getenv('CLOUDINARY_API_SECRET'),
+                'cloud_name' => $config['cloudinary']['cloud_name'],  // Haal de cloud_name uit het JSON
+                'api_key'    => $config['cloudinary']['api_key'],     // Haal de api_key uit het JSON
+                'api_secret' => $config['cloudinary']['api_secret'],  // Haal de api_secret uit het JSON
             ]
         ];
-
+    
         // Initializeer Cloudinary met de configuratie
         $cloudinary = new Cloudinary($cloudinaryConfig);
-
+    
         // Controleer of er een fout is bij het uploaden van het bestand
         if ($file['error'] !== UPLOAD_ERR_OK) {
             throw new Exception("File upload error: " . $file['error']);
         }
-
+    
         try {
             // Upload bestand naar Cloudinary
             $result = $cloudinary->uploadApi()->upload($file['tmp_name'], [
                 'folder' => 'webshop_images', // Optioneel: Organiseer bestanden in een map
             ]);
-
+    
             // Sla de URL van de geüploade afbeelding op
             $this->setImage($result['secure_url']);
             return true;
@@ -103,7 +115,7 @@ class Product {
             throw new Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
         }
     }
-
+    
 
     // Methode om alle producten op te halen
     public static function getAll() {
