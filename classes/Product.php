@@ -73,28 +73,26 @@ class Product {
 
     // Methode voor het uploaden van een afbeelding
     public function uploadImage($file) {
-        // Laad het JSON-configuratiebestand
-        $configJson = file_get_contents(__DIR__ . '/config.json'); // Zorg ervoor dat het pad naar je JSON bestand klopt
-        if (!$configJson) {
-            throw new \Exception("Kon het configuratiebestand niet laden.");
+        // Haal de Cloudinary-configuratie op uit de database
+        $conn = Db::getConnection();
+        $stmt = $conn->prepare("SELECT cloud_name, api_key, api_secret FROM config LIMIT 1");
+        $stmt->execute();
+        $config = $stmt->fetch(\PDO::FETCH_ASSOC);
+    
+        if (!$config) {
+            throw new \Exception("Cloudinary configuration not found in the database.");
         }
     
-        // Decodeer de JSON naar een PHP array
-        $config = json_decode($configJson, true);
-        if (!$config || !isset($config['cloudinary'])) {
-            throw new \Exception("Ongeldige configuratie in het JSON-bestand.");
-        }
-    
-        // Haal de Cloudinary configuratie uit het JSON-bestand
+        // Haal de Cloudinary-configuratie uit de database
         $cloudinaryConfig = [
             'cloud' => [
-                'cloud_name' => $config['cloudinary']['cloud_name'],  // Haal de cloud_name uit het JSON
-                'api_key'    => $config['cloudinary']['api_key'],     // Haal de api_key uit het JSON
-                'api_secret' => $config['cloudinary']['api_secret'],  // Haal de api_secret uit het JSON
+                'cloud_name' => $config['cloud_name'],
+                'api_key'    => $config['api_key'],
+                'api_secret' => $config['api_secret'],
             ]
         ];
     
-        // Initializeer Cloudinary met de configuratie
+        // Initialiseer Cloudinary met de configuratie
         $cloudinary = new Cloudinary($cloudinaryConfig);
     
         // Controleer of er een fout is bij het uploaden van het bestand
@@ -115,6 +113,7 @@ class Product {
             throw new \Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
         }
     }
+    
     
 
     // Methode om alle producten op te halen
