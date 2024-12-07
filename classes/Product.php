@@ -74,7 +74,7 @@ class Product {
     // Methode voor het uploaden van een afbeelding
     public function uploadImage($file) {
         // Laad het JSON-configuratiebestand
-        $configJson = file_get_contents(__DIR__ . '/../config.json'); // Zorg ervoor dat het pad naar je JSON bestand klopt
+        $configJson = file_get_contents(__DIR__ . '/config.json'); // Zorg ervoor dat het pad naar je JSON bestand klopt
         if (!$configJson) {
             throw new \Exception("Kon het configuratiebestand niet laden.");
         }
