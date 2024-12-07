@@ -171,6 +171,13 @@ class Product {
     // Methode om een product te verwijderen op basis van ID
     public static function deleteById($id) {
         $conn = Db::getConnection();
+    
+        // Delete comments referencing the product
+        $statement = $conn->prepare("DELETE FROM comments WHERE productId = :id");
+        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+    
+        // Delete the product itself
         $statement = $conn->prepare("DELETE FROM products WHERE id = :id");
         $statement->bindValue(':id', $id, \PDO::PARAM_INT);
         return $statement->execute();
