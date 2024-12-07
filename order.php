@@ -23,7 +23,7 @@ $orders = Order::getOrdersByUser($userId);
     <link rel="stylesheet" href="webshop.css">
     <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
 </head>
-<body>
+<body id="orders-page">
     <?php include_once("nav.php"); ?> 
 
     <h1>Mijn Bestellingen</h1>

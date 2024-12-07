@@ -79,33 +79,36 @@ if (isset($_GET['id'])) {
             </div>
 
             <form method="post" action="winkelmandje.php">
-    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                <div  class="kopen">
+                <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
 
-    <!-- Maat selecteren (optioneel) -->
-    <?php if ($product['requires_size'] == '1'): ?>
-        <label for="size">Kies een maat (optioneel):</label>
-        <select name="size" id="size">
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <!-- Voeg hier meer maten toe indien nodig -->
-        </select>
-    <?php else: ?>
-        <input type="hidden" name="size" value="Geen maat">
-    <?php endif; ?>
+                <!-- Maat selecteren (optioneel) -->
+                <?php if ($product['requires_size'] == '1'): ?>
+                    <label for="size">Kies een maat (optioneel):</label>
+                    <select name="size" id="size">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <!-- Voeg hier meer maten toe indien nodig -->
+                    </select>
+                <?php else: ?>
+                    <input type="hidden" name="size" value="Geen maat">
+                <?php endif; ?>
 
-    <!-- Hoeveelheid -->
-    <input type="number" name="quantity" value="1" min="1" required>
-    <button type="submit" name="add_to_cart">Toevoegen aan winkelwagen</button>
-</form>
+                <!-- Hoeveelheid -->
+                <label for="size">Kies hoeveelheid:</label>
+                <input type="number" name="quantity" value="1" min="1" required>
+                <button type="submit" name="add_to_cart">Toevoegen aan winkelwagen</button>
+                </div>
+            </form>
 
-            <br>
+         
                 
             <!-- Debugging comments -->
             <div class="post__comments">
                 <?php if ($userCanComment): ?>
                     <div class="post__comments__form">
-                        <input type="text" id="commentText" placeholder="What's on your mind">
+                        <input type="text" id="commentText" placeholder="Schrijf een review">
                         <a href="#" class="btn" id="btnAddComment" data-postid="<?php echo $productId; ?>">Voeg commentaar toe</a>
                     </div>  
 

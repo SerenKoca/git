@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
     <?php include_once("nav.php"); ?>   
 </head>
-<body>
+<body  class="change-password-page">
     <h1>Wachtwoord Wijzigen</h1>
     
     <!-- Weergeven van een bericht bij succesvol of fout -->
@@ -70,9 +70,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <button type="submit" class="btn">Wijzig Wachtwoord</button>
     </form>
-
-    <footer>
-        <?php include_once("footer.php"); ?> 
-    </footer>
 </body>
 </html>
