@@ -72,47 +72,35 @@ class Product {
 
 
     // Methode voor het uploaden van een afbeelding
-    public function uploadImage($file) {
-        // Haal de Cloudinary-configuratie op uit de database
-        $conn = Db::getConnection();
-        $stmt = $conn->prepare("SELECT cloud_name, api_key, api_secret FROM config LIMIT 1");
-        $stmt->execute();
-        $config = $stmt->fetch(\PDO::FETCH_ASSOC);
-    
-        if (!$config) {
-            throw new \Exception("Cloudinary configuration not found in the database.");
-        }
-    
-        // Haal de Cloudinary-configuratie uit de database
-        $cloudinaryConfig = [
-            'cloud' => [
-                'cloud_name' => $config['cloud_name'],
-                'api_key'    => $config['api_key'],
-                'api_secret' => $config['api_secret'],
-            ]
-        ];
-    
-        // Initialiseer Cloudinary met de configuratie
-        $cloudinary = new Cloudinary($cloudinaryConfig);
-    
-        // Controleer of er een fout is bij het uploaden van het bestand
+    public static function uploadImage($file) {
+        // Controleer of het bestand een afbeelding is
         if ($file['error'] !== UPLOAD_ERR_OK) {
             throw new \Exception("File upload error: " . $file['error']);
         }
     
+        // Gebruik Cloudinary om de afbeelding te uploaden (dit kan lokaal zijn of naar de cloud)
         try {
+            // Voor Cloudinary-configuratie
+            $cloudinary = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => 'jouw-cloud-naam',
+                    'api_key'    => 'jouw-api-key',
+                    'api_secret' => 'jouw-api-secret'
+                ]
+            ]);
+    
             // Upload bestand naar Cloudinary
             $result = $cloudinary->uploadApi()->upload($file['tmp_name'], [
                 'folder' => 'webshop_images', // Optioneel: Organiseer bestanden in een map
             ]);
     
             // Sla de URL van de geüploade afbeelding op
-            $this->setImage($result['secure_url']);
-            return true;
+            return $result['secure_url'];
         } catch (Exception $e) {
             throw new \Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
         }
     }
+    
     
     
 
