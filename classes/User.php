@@ -1,9 +1,10 @@
 <?php
 namespace Kocas\Git;
 
+use Kocas\Git\interfaces\iUser;
 use Kocas\Git\Db;
 
-class User {
+class User implements UserInterface{
     private $id;
     private $email;
     private $password;
