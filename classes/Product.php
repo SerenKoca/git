@@ -72,51 +72,48 @@ class Product {
 
 
     // Methode voor het uploaden van een afbeelding
-    public function uploadImage($file) {
-        // Haal de Cloudinary-configuratie op uit de database
-        $conn = Db::getConnection();
-        $stmt = $conn->prepare("SELECT cloud_name, api_key, api_secret FROM config LIMIT 1");
-        $stmt->execute();
-        $config = $stmt->fetch(\PDO::FETCH_ASSOC);
-    
-        if (!$config) {
-            throw new \Exception("Cloudinary configuration not found in the database.");
-        }
-    
-        // Haal de Cloudinary-configuratie uit de database
-        $cloudinaryConfig = [
-            'cloud' => [
-                'cloud_name' => $config['cloud_name'],
-                'api_key'    => $config['api_key'],
-                'api_secret' => $config['api_secret'],
-            ]
-        ];
-    
-        // Initialiseer Cloudinary met de configuratie
-        $cloudinary = new Cloudinary($cloudinaryConfig);
-    
-        // Controleer of er een fout is bij het uploaden van het bestand
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            throw new \Exception("File upload error: " . $file['error']);
-        }
-    
-        try {
+// Methode voor het uploaden van een afbeelding naar Cloudinary
+public function uploadImage($file) {
+    // Haal de Cloudinary-configuratie op uit de database
+    $conn = Db::getConnection();
+    $stmt = $conn->prepare("SELECT cloud_name, api_key, api_secret FROM config LIMIT 1");
+    $stmt->execute();
+    $config = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-            // Maak verbinding met Cloudinary
-            $cloudinary = new Cloudinary($cloudinaryConfig);
-            
-            // Upload bestand naar Cloudinary
-            $result = $cloudinary->uploadApi()->upload($file['tmp_name'], [
-                'folder' => 'webshop_images',
-            ]);
-    
-            // Sla de URL van de geüploade afbeelding op
-            $this->setImage($result['secure_url']);
-            return true;
-        } catch (Exception $e) {
-            throw new \Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
-        }
+    if (!$config) {
+        throw new \Exception("Cloudinary configuration not found in the database.");
     }
+
+    $cloudinaryConfig = [
+        'cloud' => [
+            'cloud_name' => $config['cloud_name'],
+            'api_key'    => $config['api_key'],
+            'api_secret' => $config['api_secret'],
+        ]
+    ];
+
+    // Initialiseer Cloudinary
+    $cloudinary = new Cloudinary($cloudinaryConfig);
+
+    // Controleer of het bestand geüpload kan worden
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        throw new \Exception("File upload error: " . $file['error']);
+    }
+
+    try {
+        // Upload bestand naar Cloudinary
+        $result = $cloudinary->uploadApi()->upload($file['tmp_name'], [
+            'folder' => 'webshop_images',
+        ]);
+
+        // Sla de URL van de geüploade afbeelding op
+        $this->setImage($result['secure_url']);
+        return true;
+    } catch (Exception $e) {
+        throw new \Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
+    }
+}
+
     
     
 
