@@ -72,35 +72,51 @@ class Product {
 
 
     // Methode voor het uploaden van een afbeelding
-    public static function uploadImage($file) {
-        // Controleer of het bestand een afbeelding is
+    public function uploadImage($file) {
+        // Haal de Cloudinary-configuratie op uit de database
+        $conn = Db::getConnection();
+        $stmt = $conn->prepare("SELECT cloud_name, api_key, api_secret FROM config LIMIT 1");
+        $stmt->execute();
+        $config = $stmt->fetch(\PDO::FETCH_ASSOC);
+    
+        if (!$config) {
+            throw new \Exception("Cloudinary configuration not found in the database.");
+        }
+    
+        // Haal de Cloudinary-configuratie uit de database
+        $cloudinaryConfig = [
+            'cloud' => [
+                'cloud_name' => $config['cloud_name'],
+                'api_key'    => $config['api_key'],
+                'api_secret' => $config['api_secret'],
+            ]
+        ];
+    
+        // Initialiseer Cloudinary met de configuratie
+        $cloudinary = new Cloudinary($cloudinaryConfig);
+    
+        // Controleer of er een fout is bij het uploaden van het bestand
         if ($file['error'] !== UPLOAD_ERR_OK) {
             throw new \Exception("File upload error: " . $file['error']);
         }
     
-        // Gebruik Cloudinary om de afbeelding te uploaden (dit kan lokaal zijn of naar de cloud)
         try {
-            // Voor Cloudinary-configuratie
-            $cloudinary = new Cloudinary([
-                'cloud' => [
-                    'cloud_name' => 'jouw-cloud-naam',
-                    'api_key'    => 'jouw-api-key',
-                    'api_secret' => 'jouw-api-secret'
-                ]
-            ]);
-    
+
+            // Maak verbinding met Cloudinary
+            $cloudinary = new Cloudinary($cloudinaryConfig);
+            
             // Upload bestand naar Cloudinary
             $result = $cloudinary->uploadApi()->upload($file['tmp_name'], [
-                'folder' => 'webshop_images', // Optioneel: Organiseer bestanden in een map
+                'folder' => 'webshop_images',
             ]);
     
             // Sla de URL van de geüploade afbeelding op
-            return $result['secure_url'];
+            $this->setImage($result['secure_url']);
+            return true;
         } catch (Exception $e) {
             throw new \Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
         }
     }
-    
     
     
 
@@ -167,7 +183,7 @@ class Product {
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    // Methode om een product te verwijderen op basis van ID zonder deze error te krijgen: Fatal error: Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`webshop`.`orders`, CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)) in /app/classes/Product.php:183 Stack trace: #0 /app/classes/Product.php(183): PDOStatement->execute() #1 /app/products_admin.php(36): Kocas\Git\Product::deleteById('9') #2 {main} thrown in /app/classes/Product.php on line 183
+    // Methode om een product te verwijderen op basis van ID 
     public static function deleteById($id) {
         $conn = Db::getConnection();
     
@@ -200,10 +216,11 @@ class Product {
         $statement->bindValue(':title', $title);
         $statement->bindValue(':category_id', $categoryId, \PDO::PARAM_INT);
         $statement->bindValue(':price', $price);
-        $statement->bindValue(':image', $image);
+        $statement->bindValue(':image', $image);  // Dit is de nieuwe afbeelding URL van Cloudinary
         $statement->bindValue(':description', $description);
         return $statement->execute();
     }
+    
 
     // Methode om een product op te halen op basis van ID
     public static function getById($id) {

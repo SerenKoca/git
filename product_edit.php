@@ -34,26 +34,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'];
     $category = $_POST['category'];
     $price = $_POST['price'];
-    $image = $_POST['image']; // Optionally, handle image upload
+    $image = $_FILES['image']; // Verkrijg de geüploade afbeelding
     $description = $_POST['description']; // Haal de beschrijving op
 
-    // Afbeelding verwerken
-    $image = null;
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        // Image upload verwerken (via Cloudinary of lokaal)
+    // Als er een nieuwe afbeelding is geüpload, upload deze dan naar Cloudinary
+    if ($image['error'] === 0) {
         try {
-            // Verwerk de upload (bijvoorbeeld Cloudinary)
-            $image = Product::uploadImage($_FILES['image']);  // Voeg deze regel toe
-        } catch (Exception $e) {
-            echo "Error uploading image: " . $e->getMessage();
+            // Hier wordt de afbeelding geüpload naar Cloudinary
+            $product->uploadImage($image); // Gebruik de uploadImage methode om de afbeelding naar Cloudinary te sturen
+        } catch (\Exception $e) {
+            // Afbeelding uploaden mislukt, foutmelding
+            $error = $e->getMessage();
         }
-    } else {
-        // Als geen bestand wordt geüpload, gebruik dan de bestaande afbeelding
-        $image = $product['image']; // Bestaande afbeelding behouden
     }
 
+
     // Werk het product bij in de database
-    Product::update($productId, $title, $category, $price, $image, $description);
+    Product::update($productId, $title, $category, $price, $product->getImage(), $description);
 
     // Redirect naar de productlijst na het bijwerken
     header("Location: products_admin.php");
