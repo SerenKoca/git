@@ -6,6 +6,9 @@ use Kocas\Git\Product;
 use Kocas\Git\Db;
 session_start();
 
+$error = "";
+$success = "";
+
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     header("Location: index.php");
     exit;
@@ -30,32 +33,31 @@ if ($product === null) {
 $categories = Product::getCategories(); // Haal alle categorieën uit de database
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Verwerk formulier en update het product
-    $title = $_POST['title'];
+    // Haal waarden op uit het formulier
+    $title = trim($_POST['title']);
     $category = $_POST['category'];
     $price = $_POST['price'];
-    $image = $_FILES['image']; // Verkrijg de geüploade afbeelding
-    $description = $_POST['description']; // Haal de beschrijving op
+    $description = trim($_POST['description']);
 
-    // Als er een nieuwe afbeelding is geüpload, upload deze dan naar Cloudinary
-    if ($image['error'] === 0) {
-        try {
-            // Hier wordt de afbeelding geüpload naar Cloudinary
-            $product->uploadImage($image); // Gebruik de uploadImage methode om de afbeelding naar Cloudinary te sturen
-        } catch (\Exception $e) {
-            // Afbeelding uploaden mislukt, foutmelding
-            $error = $e->getMessage();
-        }
+    // Validatie van velden
+    if (empty($title) || empty($category) || empty($price) || empty($description)) {
+        $error = "All fields are required.";
+    } elseif (!is_numeric($price) || $price <= 0) {
+        $error = "Please enter a valid price.";
+    } else {
+        // We are not updating the image, so we keep the old image URL
+        $newImageUrl = $product['image']; // Keep the current image
+
+        // Werk het product bij
+        Product::update($productId, $title, $category, $price, $newImageUrl, $description);
+
+        // Redirect or success message
+        $success = "Product successfully updated!";
+        header("Location: products_admin.php");
+        exit;
     }
-
-
-    // Werk het product bij in de database
-    Product::update($productId, $title, $category, $price, $product->getImage(), $description);
-
-    // Redirect naar de productlijst na het bijwerken
-    header("Location: products_admin.php");
-    exit;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -63,45 +65,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Edit</title>
+    <title>Edit Product</title>
     <link rel="stylesheet" href="webshop.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
     <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
 </head>
 <body>
+    <?php include_once("nav_admin.php"); ?>
 
-<header>
-<?php include_once("nav_admin.php"); ?>
-</header>
+    <div class="container add-product-page">
+        <h1>Edit Product</h1>
 
-<h1>Wijzig Product</h1>
+        <?php if ($error): ?>
+            <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
 
-<form action="product_edit.php?id=<?php echo $product['id']; ?>" method="POST">
-    <label for="title">Product Titel:</label>
-    <input type="text" name="title" id="title" value="<?php echo htmlspecialchars($product['title']); ?>" required>
+        <?php if ($success): ?>
+            <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+        <?php endif; ?>
 
-    <label for="category">Categorie:</label>
-    <select name="category" id="category" required>
-        <option value="">Selecteer een categorie</option>
-        <?php foreach ($categories as $category): ?>
-            <option value="<?php echo $category['id']; ?>" <?php echo $category['id'] == $product['category_id'] ? 'selected' : ''; ?>>
-                <?php echo htmlspecialchars($category['name']); ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+        <form action="product_edit.php?id=<?php echo $product['id']; ?>" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="title">Product Title</label>
+                <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($product['title']); ?>" required>
+            </div>
 
-    <label for="price">Prijs (€):</label>
-    <input type="number" name="price" id="price" value="<?php echo htmlspecialchars($product['price']); ?>" required step="0.01">
+            <div class="form-group">
+                <label for="price">Price (€)</label>
+                <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" step="0.01" required>
+            </div>
 
-    <label for="image">Afbeelding (Kies een bestand):</label>
-    <input type="file" name="image" id="image">
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="">Select a category</option>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?php echo htmlspecialchars($category['id']); ?>" 
+                            <?php echo $category['id'] == $product['category_id'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($category['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
 
-    <label for="description">Beschrijving:</label>
-    <textarea name="description" id="description" required><?php echo htmlspecialchars($product['description']); ?></textarea>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" required><?php echo htmlspecialchars($product['description']); ?></textarea>
+            </div>
 
-    <button type="submit">Wijzig Product</button>
-</form>
+            <!-- Display the current image, but do not allow image modification -->
+            <div class="form-group">
+                <label for="image">Product Image</label>
+                <?php if (!empty($product['image'])): ?>
+                    <div class="current-image">
+                        <p>Current Image:</p>
+                        <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="Product Image" style="max-width: 200px;">
+                    </div>
+                <?php endif; ?>
+                <label for="image">Product Image</label>
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
 
+            <input type="submit" value="Update Product" class="btn">
+        </form>
+    </div>
 </body>
 </html>

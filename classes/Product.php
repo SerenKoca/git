@@ -56,7 +56,7 @@ class Product {
     }
 
     // Methode om product toe te voegen aan de database
-       public function addProduct() {
+    public function addProduct() {
         $conn = Db::getConnection();
         $statement = $conn->prepare("
             INSERT INTO products (title, price, category_id, image, description) 
@@ -112,7 +112,6 @@ class Product {
             throw new \Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
         }
     }
-    
     
 
     // Methode om alle producten op te halen
@@ -200,22 +199,17 @@ class Product {
     
 
     // Methode om een product bij te werken
-    public static function update($id, $title, $categoryId, $price, $image, $description) {
+    public static function update($productId, $title, $category, $price, $imageUrl, $description) {
         $conn = Db::getConnection();
-        $statement = $conn->prepare("
-            UPDATE products 
-            SET title = :title, category_id = :category_id, price = :price, image = :image, description = :description 
-            WHERE id = :id
-        ");
-        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
-        $statement->bindValue(':title', $title);
-        $statement->bindValue(':category_id', $categoryId, \PDO::PARAM_INT);
-        $statement->bindValue(':price', $price);
-        $statement->bindValue(':image', $image);  // Dit is de nieuwe afbeelding URL van Cloudinary
-        $statement->bindValue(':description', $description);
-        return $statement->execute();
+        $stmt = $conn->prepare("UPDATE products SET title = :title, category_id = :category, price = :price, image = :image, description = :description WHERE id = :id");
+        $stmt->bindValue(':title', $title);
+        $stmt->bindValue(':category', $category);
+        $stmt->bindValue(':price', $price);
+        $stmt->bindValue(':image', $imageUrl);
+        $stmt->bindValue(':description', $description);
+        $stmt->bindValue(':id', $productId);
+        $stmt->execute();
     }
-    
 
     // Methode om een product op te halen op basis van ID
     public static function getById($id) {
