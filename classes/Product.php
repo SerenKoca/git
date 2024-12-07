@@ -176,6 +176,11 @@ class Product {
         $deleteOrdersStatement = $conn->prepare("DELETE FROM orders WHERE product_id = :id");
         $deleteOrdersStatement->bindValue(':id', $id, \PDO::PARAM_INT);
         $deleteOrdersStatement->execute();
+
+        // Verwijder gerelateerde comments
+        $deleteCommentsStatement = $conn->prepare("DELETE FROM comments WHERE productId = :id");
+        $deleteCommentsStatement->bindValue(':id', $id, \PDO::PARAM_INT);
+        $deleteCommentsStatement->execute();
     
         // Verwijder het product
         $statement = $conn->prepare("DELETE FROM products WHERE id = :id");
