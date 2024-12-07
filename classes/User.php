@@ -4,7 +4,7 @@ namespace Kocas\Git;
 use Kocas\Git\interfaces\iUser;
 use Kocas\Git\Db;
 
-class User implements UserInterface{
+class User implements iUser{
     private $id;
     private $email;
     private $password;
