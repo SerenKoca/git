@@ -71,10 +71,9 @@ class Product {
     }
 
 
-    // Methode voor het uploaden van een afbeelding
+// Methode voor het uploaden van een afbeelding naar Cloudinary
 // Methode voor het uploaden van een afbeelding naar Cloudinary
 public function uploadImage($file) {
-    // Haal de Cloudinary-configuratie op uit de database
     $conn = Db::getConnection();
     $stmt = $conn->prepare("SELECT cloud_name, api_key, api_secret FROM config LIMIT 1");
     $stmt->execute();
@@ -92,21 +91,17 @@ public function uploadImage($file) {
         ]
     ];
 
-    // Initialiseer Cloudinary
     $cloudinary = new Cloudinary($cloudinaryConfig);
 
-    // Controleer of het bestand geüpload kan worden
     if ($file['error'] !== UPLOAD_ERR_OK) {
         throw new \Exception("File upload error: " . $file['error']);
     }
 
     try {
-        // Upload bestand naar Cloudinary
         $result = $cloudinary->uploadApi()->upload($file['tmp_name'], [
             'folder' => 'webshop_images',
         ]);
 
-        // Sla de URL van de geüploade afbeelding op
         $this->setImage($result['secure_url']);
         return true;
     } catch (Exception $e) {
@@ -220,18 +215,32 @@ public function uploadImage($file) {
     
 
     // Methode om een product op te halen op basis van ID
-    public static function getById($id) {
-        $conn = Db::getConnection();
-        $statement = $conn->prepare("
-            SELECT products.*, categories.name AS category_name 
-            FROM products 
-            LEFT JOIN categories ON products.category_id = categories.id 
-            WHERE products.id = :id
-        ");
-        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
-        $statement->execute();
-        return $statement->fetch(\PDO::FETCH_ASSOC);
+    // Methode om een product op te halen op basis van ID
+public static function getById($id) {
+    $conn = Db::getConnection();
+    $statement = $conn->prepare("
+        SELECT products.*, categories.name AS category_name 
+        FROM products 
+        LEFT JOIN categories ON products.category_id = categories.id 
+        WHERE products.id = :id
+    ");
+    $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+    $statement->execute();
+    $productData = $statement->fetch(\PDO::FETCH_ASSOC);
+
+    // Controleer of het product bestaat
+    if ($productData) {
+        $product = new Product();
+        $product->setTitle($productData['title'])
+                ->setPrice($productData['price'])
+                ->setCategoryId($productData['category_id'])
+                ->setImage($productData['image'])
+                ->setDescription($productData['description']);
+        return $product;
     }
+    return null;  // Als het product niet bestaat, return null
+}
+
 
     
 }

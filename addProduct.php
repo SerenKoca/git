@@ -1,43 +1,65 @@
 <?php
-
-include_once(__DIR__ . "/classes/Category.php");
+include_once(__DIR__ . "/classes/Db.php");
 include_once(__DIR__ . "/classes/Product.php");
 require_once __DIR__ . '/bootstrap.php';
 
-use Kocas\Git\Category;
 use Kocas\Git\Product;
+use Kocas\Git\Db;
 
 session_start();
+
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
     header("Location: index.php");
     exit;
 }
 
-$error = "";
-$success = "";
+// Haal de product ID op
+if (!isset($_GET['id'])) {
+    header("Location: products_admin.php"); // Redirect if no product ID is provided
+    exit;
+}
 
-$categories = Category::getAllCategories();
+$productId = $_GET['id'];
+$product = Product::getById($productId);
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    try {
-        $product = new Product();
-        $product->setTitle($_POST['title'])
-                ->setPrice($_POST['price'])
-                ->setCategoryId($_POST['category'])
-                ->setDescription($_POST['description']);
+// Controleer of het product bestaat
+if ($product === null) {
+    echo "Product niet gevonden!";
+    exit;
+}
 
-        // Afbeelding uploaden
-        $product->uploadImage($_FILES['image']);
+// Verkrijg de afbeelding uit de array
+$imageUrl = isset($product->image) ? $product->image : ''; // Controleer of de afbeelding bestaat
 
-        // Product toevoegen
-        if ($product->addProduct()) {
-            $success = "Product successfully added!";
-        } else {
-            $error = "Failed to add product.";
+// Haal de categorieën op uit de database
+$categories = Product::getCategories(); // Haal alle categorieën uit de database
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Verwerk formulier en update het product
+    $title = $_POST['title'];
+    $category = $_POST['category'];
+    $price = $_POST['price'];
+    $image = $_FILES['image']; // Verkrijg de geüploade afbeelding
+    $description = $_POST['description']; // Haal de beschrijving op
+
+    // Als er een nieuwe afbeelding is geüpload, upload deze dan naar Cloudinary
+    if ($image['error'] === 0) {
+        try {
+            // Hier wordt de afbeelding geüpload naar Cloudinary
+            $product->uploadImage($image); // Gebruik de uploadImage methode om de afbeelding naar Cloudinary te sturen
+            $imageUrl = $product->getImage(); // Verkrijg de URL van de geüploade afbeelding
+        } catch (\Exception $e) {
+            // Afbeelding uploaden mislukt, foutmelding
+            $error = $e->getMessage();
         }
-    } catch (\Exception $e) {
-        $error = $e->getMessage();
     }
+
+    // Werk het product bij in de database
+    Product::update($productId, $title, $category, $price, $imageUrl, $description);
+
+    // Redirect naar de productlijst na het bijwerken
+    header("Location: products_admin.php");
+    exit;
 }
 ?>
 
