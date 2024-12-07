@@ -2,8 +2,10 @@
 
 namespace Kocas\Git;
 
-use Kocas\Git\interfaces\iUser;
+
 use Kocas\Git\Db;
+use Kocas\Git\interfaces\iUser;
+require_once __DIR__ . '/interfaces/iUser.php';
 
 class User implements iUser{
     private $id;
