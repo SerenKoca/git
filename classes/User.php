@@ -1,4 +1,5 @@
 <?php
+
 namespace Kocas\Git;
 
 use Kocas\Git\interfaces\iUser;

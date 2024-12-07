@@ -1,5 +1,5 @@
 <?php
-  namespace Kocas\Git\Interfaces;
+  namespace Kocas\Git\interfaces;
 
   interface iUser{
     public function getId();
