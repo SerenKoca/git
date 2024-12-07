@@ -82,8 +82,6 @@ class Order {
                     // Voeg het product toe aan de lijst
                     $cartItems[] = $product;
                 } else {
-                    // Foutafhandelingscode als de prijs niet geldig is
-                    // Dit zou in productie-omgevingen kunnen worden gelogd voor debugging
                     continue;
                 }
             }
@@ -196,7 +194,7 @@ class Order {
             throw new \Exception("Database connection failed.");
         }
 
-        // Prepare the query to check if the user has purchased the specific product
+        // Bereid de query voor om te controleren of de gebruiker het specifieke product heeft gekocht
         $statement = $conn->prepare("
             SELECT COUNT(*) 
             FROM orders 
@@ -207,9 +205,9 @@ class Order {
         $statement->bindValue(':productId', $productId, \PDO::PARAM_INT);
         
         $statement->execute();
-        $count = $statement->fetchColumn();  // Fetch the count of orders
+        $count = $statement->fetchColumn();  // Haal het aantal bestellingen op
 
-        return $count > 0;  // If count is greater than 0, the user has purchased the product
+        return $count > 0;  // Als het aantal groter is dan 0, heeft de gebruiker het product gekocht
     }
 }
 ?>

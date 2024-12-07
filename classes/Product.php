@@ -138,7 +138,7 @@ class Product {
     public static function getByCategory($categoryName) {
         $conn = Db::getConnection();
         
-        // First, get the category ID based on the category name
+        // haal de categorie-ID op op basis van de categorienaam
         $stmt = $conn->prepare("SELECT id FROM categories WHERE name = :category_name LIMIT 1");
         $stmt->bindValue(':category_name', $categoryName, \PDO::PARAM_STR);
         $stmt->execute();
@@ -147,7 +147,7 @@ class Product {
         if ($category) {
             $categoryId = $category['id'];
             
-            // Now, fetch the products by category ID
+            // Haal de producten op op basis van de categorie-ID
             $statement = $conn->prepare("
                 SELECT products.*, categories.name AS category_name 
                 FROM products 
@@ -158,7 +158,7 @@ class Product {
             $statement->execute();
             return $statement->fetchAll(\PDO::FETCH_ASSOC);
         } else {
-            return []; // If no category found, return empty
+            return []; // als geen categorie gevonden is, geef een lege array terug
         }
     }
 

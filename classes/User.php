@@ -77,7 +77,7 @@ class User implements iUser{
         }
     }
 
-    public function changePassword($currentPassword, $newPassword) {
+        public function changePassword($currentPassword, $newPassword) {
         $conn = Db::getConnection();
         $statement = $conn->prepare("SELECT password FROM users WHERE email = :email");
         $statement->bindValue(':email', $this->email);
@@ -169,8 +169,6 @@ class User implements iUser{
         $executed = $statement->execute();
        
     }
-    
-    
 
     public static function getUserByEmail($email) {
         $conn = Db::getConnection();

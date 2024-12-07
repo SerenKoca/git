@@ -1,15 +1,6 @@
 <?php
 namespace Kocas\Git;
 
-$pathToSSL = __DIR__ . '/CA.pem';
-$options = array(
-    \PDO::MYSQL_ATTR_SSL_CA => $pathToSSL
-);
-
-
-
-
-
 class Db {
     private static $conn = null;
 
