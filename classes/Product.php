@@ -76,9 +76,9 @@ class Product {
         // Cloudinary configuratie zonder .env
         $cloudinaryConfig = [
             'cloud' => [
-                'cloud_name' => 'dxbez7ob0',   // Vul hier je Cloudinary Cloud Name in
-                'api_key'    => '228424447245619',      // Vul hier je Cloudinary API Key in
-                'api_secret' => '-O4FBdpNc92q7bEQBZsq_N_lnWE',   // Vul hier je Cloudinary API Secret in
+                'cloud_name' => getenv('CLOUDINARY_CLOUD_NAME'),
+                'api_key'    => getenv('CLOUDINARY_API_KEY'),
+                'api_secret' => getenv('CLOUDINARY_API_SECRET'),
             ]
         ];
 

@@ -19,7 +19,6 @@ if (!empty($_POST)) {
 
         // Probeer de klant op te slaan
         if ($customer->save()) {
-            echo "Account succesvol aangemaakt!";
             header("Location: login.php");
         } else {
             $error1 = "Er is een fout opgetreden bij het opslaan van de gebruiker.";
