@@ -168,20 +168,14 @@ class Product {
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    // Methode om een product te verwijderen op basis van ID
+    // Methode om een product te verwijderen op basis van ID zonder deze error te krijgen: Fatal error: Uncaught PDOException: SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails (`webshop`.`orders`, CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)) in /app/classes/Product.php:183 Stack trace: #0 /app/classes/Product.php(183): PDOStatement->execute() #1 /app/products_admin.php(36): Kocas\Git\Product::deleteById('9') #2 {main} thrown in /app/classes/Product.php on line 183
     public static function deleteById($id) {
         $conn = Db::getConnection();
-    
-        // Delete comments referencing the product
-        $statement = $conn->prepare("DELETE FROM comments WHERE productId = :id");
-        $statement->bindValue(':id', $id, \PDO::PARAM_INT);
-        $statement->execute();
-    
-        // Delete the product itself
         $statement = $conn->prepare("DELETE FROM products WHERE id = :id");
         $statement->bindValue(':id', $id, \PDO::PARAM_INT);
         return $statement->execute();
     }
+    
 
     // Methode om een product bij te werken
     public static function update($id, $title, $categoryId, $price, $image, $description) {
