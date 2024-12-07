@@ -89,7 +89,6 @@ if (isset($_GET['id'])) {
     <?php if ($product['requires_size'] == '1'): ?>
         <label for="size">Kies een maat (optioneel):</label>
         <select name="size" id="size">
-            <option value="">Geen maat</option>
             <option value="S">S</option>
             <option value="M">M</option>
             <option value="L">L</option>
