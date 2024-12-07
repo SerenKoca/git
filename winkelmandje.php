@@ -58,64 +58,73 @@ $balance = $user ? number_format($user['balance'], 2) : '0.00'; // Format the ba
     <link rel="stylesheet" href="webshop.css">
     <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
 </head>
-<body>
+<body class="winkelmand-page">
     <?php include_once("nav.php"); ?> 
 
-    <h1>Winkelmandje</h1>
+    <div class="cart-container">
+        <h1>Winkelmandje</h1>
 
-    <!-- Display the user's balance -->
-    <div class="balance-info">
-        <p><strong>Je saldo: €<?php echo htmlspecialchars($balance); ?></strong></p>
-    </div>
+        <!-- Display the user's balance -->
+        <div class="balance-info">
+            <p><strong>Je saldo: €<?php echo htmlspecialchars($balance); ?></strong></p>
+        </div>
 
-    <?php if (!empty($message)): ?>
-        <p class="success"><?php echo htmlspecialchars($message); ?></p>
-    <?php endif; ?>
+        <?php if (!empty($message)): ?>
+            <p class="success"><?php echo htmlspecialchars($message); ?></p>
+        <?php endif; ?>
 
-    <?php if (!empty($error)): ?>
-        <p class="error"><?php echo htmlspecialchars($error); ?></p>
-    <?php endif; ?>
+        <?php if (!empty($error)): ?>
+            <p class="error"><?php echo htmlspecialchars($error); ?></p>
+        <?php endif; ?>
 
-    <?php if (!empty($cartItems)): ?>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Prijs</th>
-                    <th>Aantal</th>
-                    <th>Maat</th>
-                    <th>Totaal</th>
-                    <th>Acties</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($cartItems as $item): ?>
+        <!-- Cart Items -->
+        <?php if (!empty($cartItems)): ?>
+            <div class="containerCard">
+            <table class="cart-table">
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($item['title']); ?></td>
-                        <td>€<?php echo number_format($item['price'], 2); ?></td>
-                        <td><?php echo htmlspecialchars($item['quantity']); ?></td>
-                        <td><?php echo htmlspecialchars($item['size'] ?? 'Geen maat'); ?></td> <!-- Maat weergeven -->
-                        <td>€<?php echo number_format($item['total_price'], 2); ?></td>
-                        <td>
-                            <form method="post">
-                                <input type="hidden" name="product_id" value="<?php echo $item['id']; ?>">
-                                <input type="hidden" name="size" value="<?php echo htmlspecialchars($item['size'] ?? ''); ?>"> <!-- Voeg maat toe -->
-                                <button type="submit" name="remove">Verwijderen</button>
-                            </form>
-                        </td>
+                        <th>Product</th>
+                        <th>Prijs</th>
+                        <th>Aantal</th>
+                        <th>Maat</th>
+                        <th>Totaal</th>
+                        <th>Acties</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($cartItems as $item): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($item['title']); ?></td>
+                            <td>€<?php echo number_format($item['price'], 2); ?></td>
+                            <td><?php echo htmlspecialchars($item['quantity']); ?></td>
+                            <td><?php echo htmlspecialchars($item['size'] ?? 'Geen maat'); ?></td>
+                            <td>€<?php echo number_format($item['total_price'], 2); ?></td>
+                            <td>
+                                <form method="post">
+                                    <input type="hidden" name="product_id" value="<?php echo $item['id']; ?>">
+                                    <input type="hidden" name="size" value="<?php echo htmlspecialchars($item['size'] ?? ''); ?>">
+                                    <button type="submit" name="remove">Verwijderen</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            </div>
 
-        <form method="post">
-            <button type="submit" name="clear">Winkelwagen Leegmaken</button>
-            <button type="submit" name="checkout">Afrekenen</button>
-        </form>
-    <?php else: ?>
-        <p>Je winkelwagen is leeg.</p>
-    <?php endif; ?>
+            <!-- Action buttons -->
+            <div class="cart-actions">
+                <form method="post">
+                    <button type="submit" name="clear" class="clear-btn">Winkelwagen Leegmaken</button>
+                    <button type="submit" name="checkout" class="checkout-btn">Afrekenen</button>
+                </form>
+            </div>
+        <?php else: ?>
+            <p class="empty-cart">Je winkelwagen is leeg.</p>
+        <?php endif; ?>
 
-    <a href="products.php">Verder winkelen</a>
+        <a href="products.php" class="continue-shopping">Verder winkelen</a>
+    </div>
 </body>
+
 </html>

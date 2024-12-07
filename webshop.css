@@ -918,3 +918,95 @@ form button[type="submit"]:hover {
 .change-password-page .btn:hover {
   background-color: #7db8e6;
 }
+
+/*------- winkelmandje*/
+
+.winkelmand-page {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+.cart-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.balance-info {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.cart-table th, .cart-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.cart-table th {
+  background-color: #ebca7f;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.clear-btn {
+  background-color: #f44336;
+}
+
+.clear-btn:hover {
+  background-color: #e53935;
+}
+
+.checkout-btn {
+  background-color: #2196F3;
+}
+
+.checkout-btn:hover {
+  background-color: #1976D2;
+}
+
+.empty-cart {
+  font-size: 1.2em;
+  color: #555;
+}
+
+.continue-shopping {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 2em;
+  color: black;
+  text-decoration: none;
+  text-align: center;
+  text-decoration: underline;
+}
+
+.continue-shopping:hover {
+  text-decoration: none;
+}
+
+.containerCard{
+  background-color: white;
+}
