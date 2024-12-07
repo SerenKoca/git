@@ -74,15 +74,15 @@ class Product {
     // Methode voor het uploaden van een afbeelding
     public function uploadImage($file) {
         // Laad het JSON-configuratiebestand
-        $configJson = file_get_contents(__DIR__ . '/config.json'); // Zorg ervoor dat het pad naar je JSON bestand klopt
+        $configJson = file_get_contents(__DIR__ . '/../config.json'); // Zorg ervoor dat het pad naar je JSON bestand klopt
         if (!$configJson) {
-            throw new Exception("Kon het configuratiebestand niet laden.");
+            throw new \Exception("Kon het configuratiebestand niet laden.");
         }
     
         // Decodeer de JSON naar een PHP array
         $config = json_decode($configJson, true);
         if (!$config || !isset($config['cloudinary'])) {
-            throw new Exception("Ongeldige configuratie in het JSON-bestand.");
+            throw new \Exception("Ongeldige configuratie in het JSON-bestand.");
         }
     
         // Haal de Cloudinary configuratie uit het JSON-bestand
@@ -99,7 +99,7 @@ class Product {
     
         // Controleer of er een fout is bij het uploaden van het bestand
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            throw new Exception("File upload error: " . $file['error']);
+            throw new \Exception("File upload error: " . $file['error']);
         }
     
         try {
@@ -112,7 +112,7 @@ class Product {
             $this->setImage($result['secure_url']);
             return true;
         } catch (Exception $e) {
-            throw new Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
+            throw new \Exception("Failed to upload image to Cloudinary: " . $e->getMessage());
         }
     }
     
