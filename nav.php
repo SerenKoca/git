@@ -20,9 +20,9 @@
 
         <div class="nav_username">
             <a href="#" class="user_nav"><?php echo "Username: " . $_SESSION['email']; ?></a> |
-            <a href="change_password.php">Change Password</a> |
+            <a href="change_password.php">Wachtwoord wijzigen</a> |
             <a href="order.php">Order geschiedenis</a> |
-            <a href="logout.php">Log Out</a>
+            <a href="logout.php">Uitloggen</a>
             <a href="winkelmandje.php"><i class="fa-solid fa-cart-shopping"></i></a> 
         </div>
     </nav>

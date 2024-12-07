@@ -1,6 +1,5 @@
 <?php
-include_once(__DIR__ . '/classes/User.php');
-include_once(__DIR__ . '/classes/Admin.php');
+
 require_once __DIR__ . '/bootstrap.php';
 
 // Gebruik de namespace

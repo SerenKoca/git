@@ -3,9 +3,6 @@ use Kocas\Git\Order;
 use Kocas\Git\Product;
 use Kocas\Git\User;
 
-include_once(__DIR__ . "/classes/Order.php");
-include_once(__DIR__ . "/classes/Product.php");
-include_once(__DIR__ . "/classes/User.php");
 require_once __DIR__ . '/bootstrap.php';
 
 session_start();

@@ -1,6 +1,4 @@
 <?php 
-
-include_once(__DIR__ . "/classes/Product.php");
 require_once __DIR__ . '/bootstrap.php';
 
 use Kocas\Git\Product;
@@ -76,7 +74,7 @@ $categories = Product::getCategories();
                         <?php if (!empty($product['image'])): ?>
                             <img src="<?= htmlspecialchars($product['image']); ?>" alt="<?= htmlspecialchars($product['title']); ?>" style="max-width: 200px; height: auto;">
                         <?php else: ?>
-                            <p>No image available</p>
+                            <p>geen afbeelding beschikbaar</p>
                         <?php endif; ?>
                         <h2>€<?= number_format($product['price'], 2); ?></h2>
                     </a>

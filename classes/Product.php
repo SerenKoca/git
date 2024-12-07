@@ -126,6 +126,17 @@ class Product {
         return $statement->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    public static function getAllIndex() {
+        $conn = Db::getConnection();
+        $statement = $conn->prepare("
+            SELECT products.*, categories.name AS category_name 
+            FROM products 
+            LEFT JOIN categories ON products.category_id = categories.id
+        ");
+        $statement->execute();
+        return $statement->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     // Methode om alle categorieën op te halen
     public static function getCategories() {
         $conn = Db::getConnection();

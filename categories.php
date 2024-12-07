@@ -1,6 +1,5 @@
 <?php 
-include_once(__DIR__ . "/classes/Db.php");
-include_once(__DIR__ . "/classes/Category.php");
+
 require_once __DIR__ . '/bootstrap.php';
 
 use Kocas\Git\Category;
@@ -34,7 +33,6 @@ $categories = Category::getAllCategories();
 
 <h1>Categorieën Beheren</h1>
 
-<!-- Toevoegen van een categorie knop -->
 <div>
     <a href="category_add.php" class="btn-add-category">
         <i class="fas fa-plus"></i> Categorie Toevoegen
@@ -45,7 +43,6 @@ $categories = Category::getAllCategories();
 <ul>
     <?php foreach ($categories as $category): ?>
         <li>
-            <!-- Toon het icoon naast de categorie naam -->
             <i class="<?php echo htmlspecialchars($category['icon']); ?>"></i> 
             <?php echo htmlspecialchars($category['name']); ?>
         </li>

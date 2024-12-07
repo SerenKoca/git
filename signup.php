@@ -1,9 +1,5 @@
 <?php
 
-// Zorg ervoor dat de juiste paden worden gebruikt voor je includes
-include_once(__DIR__ . "/classes/Db.php");
-include_once(__DIR__ . "/classes/User.php");
-include_once(__DIR__ . "/classes/Customer.php");
 require_once __DIR__ . '/bootstrap.php';
 
 use Kocas\Git\User;

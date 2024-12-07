@@ -4,10 +4,6 @@ use Kocas\Git\Db;
 use Kocas\Git\Comment;
 use Kocas\Git\Order;
 
-include_once(__DIR__ . "/classes/Db.php");
-include_once(__DIR__ . "/classes/Product.php");
-include_once(__DIR__ . "/classes/Comment.php");
-include_once(__DIR__ . "/classes/Order.php");
 require_once __DIR__ . '/bootstrap.php';
 
 session_start();

@@ -1,7 +1,5 @@
 <?php 
 
-include_once(__DIR__ . '/classes/Db.php');
-include_once(__DIR__ . '/classes/Product.php');
 require_once __DIR__ . '/bootstrap.php';
 
 use Kocas\Git\Product; 
@@ -15,7 +13,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 }
 
 // Haal de producten op om te tonen op de homepage (korte selectie)
-$products = Product::getAll(); // Je kan hier ook een andere manier gebruiken om producten te selecteren (bijvoorbeeld featured producten)
+$products = Product::getAllIndex(); 
+shuffle($products);
+$products = array_slice($products, 0, 5);// Je kan hier ook een andere manier gebruiken om producten te selecteren (bijvoorbeeld featured producten)
 
 ?>
 
@@ -24,7 +24,7 @@ $products = Product::getAll(); // Je kan hier ook een andere manier gebruiken om
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welkom - Webshop</title>
+    <title>Welkom</title>
     <link rel="stylesheet" href="webshop.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://use.typekit.net/xgo0awo.css">
@@ -52,7 +52,7 @@ $products = Product::getAll(); // Je kan hier ook een andere manier gebruiken om
                         <article>
                     <a href="product_detail.php?id=<?= htmlspecialchars($product['id']); ?>">
                         <h2><?= htmlspecialchars($product['title']); ?></h2>
-                        <p>Categorie: <?= htmlspecialchars($product['category_name']); ?></p> <!-- Gebruik category_name -->
+                        <p>Categorie: <?= htmlspecialchars($product['category_name']); ?></p>
                         <?php if (!empty($product['image'])): ?>
                             <img src="<?= htmlspecialchars($product['image']); ?>" alt="<?= htmlspecialchars($product['title']); ?>" style="max-width: 200px; height: auto;">
                         <?php else: ?>

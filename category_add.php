@@ -1,6 +1,5 @@
 <?php 
-include_once(__DIR__ . "/classes/Db.php");
-include_once(__DIR__ . "/classes/Category.php");
+
 require_once __DIR__ . '/bootstrap.php';
 
 use Kocas\Git\Category;

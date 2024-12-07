@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product</title>
+    <title>Product toevoegen</title>
     <link rel="stylesheet" href="webshop.css">
     <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
 </head>
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php include_once("nav_admin.php"); ?>
 
     <div class="container add-product-page">
-        <h1>Add New Product</h1>
+        <h1>Nieuwe producten toevoegen</h1>
 
         <?php if ($error): ?>
             <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
@@ -64,17 +64,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <form action="" method="POST" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="title">Product Title</label>
+                <label for="title">Product titel</label>
                 <input type="text" id="title" name="title" required>
             </div>
 
             <div class="form-group">
-                <label for="price">Price (€)</label>
+                <label for="price">Prijs (€)</label>
                 <input type="number" id="price" name="price" step="0.01" required>
             </div>
 
             <div class="form-group">
-                <label for="category">Category</label>
+                <label for="category">Categorie</label>
                 <select id="category" name="category" required>
                     <option value="">Select a category</option>
                     <?php foreach ($categories as $category): ?>
@@ -86,12 +86,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="form-group">
-                <label for="description">Description</label>
+                <label for="description">Beschrijving</label>
                 <textarea id="description" name="description" rows="4" required></textarea>
             </div>
 
             <div class="form-group">
-                <label for="image">Product Image</label>
+                <label for="image">Product foto</label>
                 <input type="file" id="image" name="image" accept="image/*" required>
             </div>
 

@@ -1,6 +1,5 @@
 <?php
-include_once(__DIR__ . "/classes/Db.php");
-include_once(__DIR__ . "/classes/Product.php");
+
 require_once __DIR__ . '/bootstrap.php';
 use Kocas\Git\Product;
 use Kocas\Git\Db;
@@ -65,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Product</title>
+    <title>Product wijzigen</title>
     <link rel="stylesheet" href="webshop.css">
     <link rel="icon" type="image/x-icon" href="uploads/paw.avif">
 </head>
@@ -73,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include_once("nav_admin.php"); ?>
 
     <div class="container add-product-page">
-        <h1>Edit Product</h1>
+        <h1>Product wijzigen</h1>
 
         <?php if ($error): ?>
             <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
@@ -85,17 +84,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form action="product_edit.php?id=<?php echo $product['id']; ?>" method="POST" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="title">Product Title</label>
+                <label for="title">Product naam</label>
                 <input type="text" id="title" name="title" value="<?php echo htmlspecialchars($product['title']); ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="price">Price (€)</label>
+                <label for="price">Prijs (€)</label>
                 <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($product['price']); ?>" step="0.01" required>
             </div>
 
             <div class="form-group">
-                <label for="category">Category</label>
+                <label for="category">Categorie</label>
                 <select id="category" name="category" required>
                     <option value="">Select a category</option>
                     <?php foreach ($categories as $category): ?>
@@ -108,20 +107,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="form-group">
-                <label for="description">Description</label>
+                <label for="description">Beschrijving</label>
                 <textarea id="description" name="description" rows="4" required><?php echo htmlspecialchars($product['description']); ?></textarea>
             </div>
 
             <!-- Display the current image, but do not allow image modification -->
             <div class="form-group">
-                <label for="image">Product Image</label>
+                <label for="image">Product foto</label>
                 <?php if (!empty($product['image'])): ?>
                     <div class="current-image">
-                        <p>Current Image:</p>
+                        <p>Huidige foto:</p>
                         <img src="<?php echo htmlspecialchars($product['image']); ?>" alt="Product Image" style="max-width: 200px;">
                     </div>
                 <?php endif; ?>
-                <label for="image">Product Image</label>
+                <label for="image">Product foto</label>
                 <input type="file" id="image" name="image" accept="image/*">
             </div>
 
