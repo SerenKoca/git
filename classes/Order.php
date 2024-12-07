@@ -171,10 +171,14 @@ class Order {
     
     
     
-    public function removeFromCart($productId) {
-        if (isset($_SESSION['cart'][$productId])) {
+    public function removeFromCart($productId, $size = null) {
+        // Maak de sleutel aan zoals die in de winkelwagen is opgeslagen
+        $cartKey = $productId . ($size ? "_$size" : "");
+    
+        // Controleer of het product in de winkelwagen bestaat
+        if (isset($_SESSION['cart'][$cartKey])) {
             // Verwijder het product volledig uit de winkelwagen
-            unset($_SESSION['cart'][$productId]);
+            unset($_SESSION['cart'][$cartKey]);
         } else {
             throw new \Exception("Product niet gevonden in winkelwagen.");
         }

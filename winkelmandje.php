@@ -30,7 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = "Product succesvol toegevoegd aan winkelwagen.";
         } elseif (isset($_POST['remove'])) {
             $productId = (int)$_POST['product_id'];
-            $order->removeFromCart($productId);
+            $size = isset($_POST['size']) ? $_POST['size'] : null;
+            $order->removeFromCart($productId, $size);
             $message = "Product verwijderd uit winkelwagen.";
         } elseif (isset($_POST['clear'])) {
             $order->clearCart();
@@ -101,6 +102,7 @@ $balance = $user ? number_format($user['balance'], 2) : '0.00'; // Format the ba
                         <td>
                             <form method="post">
                                 <input type="hidden" name="product_id" value="<?php echo $item['id']; ?>">
+                                <input type="hidden" name="size" value="<?php echo htmlspecialchars($item['size'] ?? ''); ?>"> <!-- Voeg maat toe -->
                                 <button type="submit" name="remove">Verwijderen</button>
                             </form>
                         </td>
