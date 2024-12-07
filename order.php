@@ -1,8 +1,7 @@
 <?php
-use Kocas\Git\Order;
-
-include_once(__DIR__ . "/classes/Order.php");
 require_once __DIR__ . '/bootstrap.php';
+
+use Kocas\Git\Order;
 
 session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {

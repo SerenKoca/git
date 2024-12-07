@@ -37,6 +37,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $image = $_POST['image']; // Optionally, handle image upload
     $description = $_POST['description']; // Haal de beschrijving op
 
+    // Afbeelding verwerken
+    $image = null;
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        // Image upload verwerken (via Cloudinary of lokaal)
+        try {
+            // Verwerk de upload (bijvoorbeeld Cloudinary)
+            $image = Product::uploadImage($_FILES['image']);  // Voeg deze regel toe
+        } catch (Exception $e) {
+            echo "Error uploading image: " . $e->getMessage();
+        }
+    } else {
+        // Als geen bestand wordt geüpload, gebruik dan de bestaande afbeelding
+        $image = $product['image']; // Bestaande afbeelding behouden
+    }
+
     // Werk het product bij in de database
     Product::update($productId, $title, $category, $price, $image, $description);
 
@@ -82,8 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <label for="price">Prijs (€):</label>
     <input type="number" name="price" id="price" value="<?php echo htmlspecialchars($product['price']); ?>" required step="0.01">
 
-    <label for="image">Afbeelding URL:</label>
-    <input type="text" name="image" id="image" value="<?php echo htmlspecialchars($product['image']); ?>">
+    <label for="image">Afbeelding (Kies een bestand):</label>
+    <input type="file" name="image" id="image">
 
     <label for="description">Beschrijving:</label>
     <textarea name="description" id="description" required><?php echo htmlspecialchars($product['description']); ?></textarea>
