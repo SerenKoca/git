@@ -7,16 +7,12 @@ class Db {
     public static function getConnection() {
         if (self::$conn == null) {
             try {
-                // Zorg ervoor dat je \PDO gebruikt, zodat het de globale PHP-klasse is
-                /*$host = "webshopschool.mysql.database.azure.com";
-                $db = "webshop";
-                $user = "Seren";
-                $pass = "MLB11il!";*/
-                $host = "junction.proxy.rlwy.net"; // De hostnaam van Railway
-                $db = "webshop"; // De database naam
-                $user = "root"; // De gebruikersnaam van Railway
-                $pass = "RkqSzzWiJnwDjxpCsuNydvdSBCWpbGxG"; // Het wachtwoord van Railway
-                $port = "26217"; // De poort die Railway gebruikt
+                // Haal de omgevingsvariabelen op
+                $host = getenv('DB_HOST'); // Haalt de DB_HOST op
+                $db = getenv('DB_NAME'); // Haalt de DB_NAME op
+                $user = getenv('DB_USER'); // Haalt de DB_USER op
+                $pass = getenv('DB_PASS'); // Haalt het DB_PASS op
+                $port = getenv('DB_PORT'); // Haalt de DB_PORT op
 
                 // Maak de PDO-verbinding
                 self::$conn = new \PDO("mysql:host=$host;port=$port;dbname=$db", $user, $pass);
@@ -29,4 +25,5 @@ class Db {
         return self::$conn;
     }
 }
+
 ?>
